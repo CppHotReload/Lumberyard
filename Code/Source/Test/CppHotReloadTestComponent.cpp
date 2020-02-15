@@ -22,7 +22,7 @@ void CppHotReloadTestComponent::Activate()
  
 void CppHotReloadTestComponent::Deactivate()  
 { 
-	AZ::TickBus::Handler::BusDisconnect();
+	AZ::TickBus::Handler::BusDisconnect(); 
 	AZ::TransformNotificationBus::Handler::BusDisconnect();
 } 
    
@@ -45,7 +45,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 		//
 		// C++ Hot Reload
 		// 
-		m_movement.x = -20;  
+		m_movement.x = 100;     
 
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;
@@ -65,7 +65,7 @@ void CppHotReloadTestComponent::Reflect(AZ::ReflectContext* context)
 	if (serializeContext) 
 	{
 		serializeContext->Class<CppHotReloadTestComponent, AZ::Component>()
-			->Version(3)
+			->Version(4)
 			->Field("Movement Speed", &CppHotReloadTestComponent::m_moveSpeed)
 			;
 
@@ -78,7 +78,7 @@ void CppHotReloadTestComponent::Reflect(AZ::ReflectContext* context)
 				->Attribute("AutoExpand", true)
 				->Attribute("AppearsInAddComponentMenu", AZ_CRC("Game", 0x232b318c))
 				->DataElement(11, &CppHotReloadTestComponent::m_moveSpeed, "Move Speed", "Speed at which the camera moves")
-				->Attribute("Min", 6.0f)
+				->Attribute("Min", 7.0f)
 				->Attribute("Max", 10.0f)
 				->Attribute("ChangeNotify", AZ_CRC("RefreshValues", 0x28e720d4))
 				;
