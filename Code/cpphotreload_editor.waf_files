@@ -1,0 +1,13 @@
+{
+    "none": {
+        "Source": [
+            "Source/Editor/StdAfx.cpp",
+            "Source/Editor/StdAfx.h"
+        ]
+    },
+    "auto": {
+        "Editor": [
+            
+        ]
+    }
+}

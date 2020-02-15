@@ -1,0 +1,32 @@
+{
+    "none": {
+        "Source": [
+            "Source/StdAfx.cpp",
+            "Source/StdAfx.h"
+        ]
+    },
+    "auto": {
+        "Include": [
+            "Include/CppHotReload/CppHotReloadBus.h"
+        ],
+        "Source": [
+            "Source/CppHotReloadGem.cpp",
+            "Source/CppHotReloadSystemComponent.cpp",
+            "Source/CppHotReloadSystemComponent.h",
+            "Source/CppHotReloadConfig.h",
+            "Source/CppHotReloadCustomContructors.h",
+            "Source/CppHotReloadLyHook.h",
+            "Source/CppHotReloadEvents.h",
+            "Source/CppHotReloadEvents.cpp",
+            "Source/CppHotReloadInit.h",
+            "Source/CppHotReloadInit.cpp",
+            "Source/CppHotReloadSubscriber.h",
+            "Source/CppHotReloadSubscriber.cpp",
+            "Source/IncludeDirectories.txt"
+        ],
+        "Test": [
+            "Source/Test/CppHotReloadTestComponent.h",
+            "Source/Test/CppHotReloadTestComponent.cpp"
+        ]
+    }
+}

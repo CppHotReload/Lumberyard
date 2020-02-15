@@ -1,0 +1,36 @@
+#
+# Discord channel for support: https://discord.gg/9gsaNnD
+#
+def build(bld):
+    bld.DefineGem(
+        #
+        # General
+        #
+        file_list       = ['cpphotreload.waf_files'],
+        includes        = [
+                            bld.Path('Code/CryEngine/CryCommon'), 
+                            bld.Path('Code/CryEngine/CryAction'),
+                            bld.Path('Code/Framework/AzToolsFramework')
+                          ],
+        pch             = 'Source/StdAfx.cpp',
+        defines         = ['CPP_HOT_RELOAD'],
+        use             = ['AzCore'],
+        platforms       = ['win'],
+        win_features    = ['crcfix'],
+        configurations  = ['debug', 'profile'],
+        uselib          = ['CPPHOTRELOAD', 'CPPSERIALIZATION']
+        #
+        # Editor files
+        #
+        #Editor = dict(
+        #    file_list       = ['cpphotreload_editor.waf_files'],
+        #    pch             = 'Source/Editor/StdAfx.cpp',
+        #    features        = ['qt5'],
+        #    uselib          = ['QT5CORE','QT5GUI','QT5WIDGETS', 'QT5NETWORK'], # this lib depends on EditorLib, which depends on NewsShared, which depends on Qt5Network
+        #    defines         = ['CPP_HOT_RELOAD_EDITOR',],
+        #    use             = ['AzToolsFramework','EditorUI_QT','EditorCommon','EditorCore','EditorLib'],
+        #    platforms       = ['win'],
+        #    win_features    = ['crcfix'],
+        #    configurations  = ['debug', 'profile'],
+        #)
+    )
