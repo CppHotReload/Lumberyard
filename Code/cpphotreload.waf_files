@@ -11,8 +11,6 @@
         ],
         "Source": [
             "Source/CppHotReloadGem.cpp",
-            "Source/CppHotReloadSystemComponent.cpp",
-            "Source/CppHotReloadSystemComponent.h",
             "Source/CppHotReloadConfig.h",
             "Source/CppHotReloadCustomContructors.h",
             "Source/CppHotReloadLyHook.h",

@@ -105,6 +105,7 @@ extern "C"
 				ARCHITECTURE,
 				IS_DEBUG,
 				EXTRA_MACROS,
+				SET_MACROS,
 				SET_OPTIONS,
 				CPP_LANGUAGE_DIALECT,
 
@@ -249,7 +250,8 @@ extern "C"
 			CPP_HOT_RELOAD_CALLBACK_LOG_WARNING  fnCallBackLogWarning, 
 			CPP_HOT_RELOAD_CALLBACK_LOG_SYSTEM   fnCallBackLogSystem);
 
-		CPP_HOT_RELOAD_API void CPP_HOT_RELOAD_DECLARE InstallProtection(void);
+		CPP_HOT_RELOAD_API void CPP_HOT_RELOAD_DECLARE ActivateProtection(void);
+		CPP_HOT_RELOAD_API void CPP_HOT_RELOAD_DECLARE DeactivateProtection(void);
 		CPP_HOT_RELOAD_API void CPP_HOT_RELOAD_DECLARE Restore(void);
 		CPP_HOT_RELOAD_API void CPP_HOT_RELOAD_DECLARE Destroy(void);
 

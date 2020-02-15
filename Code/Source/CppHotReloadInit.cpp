@@ -44,7 +44,7 @@ namespace CppHotReload
         //
         const char* filesDirectories[] =
         {
-			LUMBERYARD_CPP_HOT_RELOAD_GAME_FILES
+			LUMBERYARD_GAME_PATH
         };
         //
         // Prepare pre-processor macros
@@ -63,26 +63,20 @@ namespace CppHotReload
 		std::string additionalLibPaths;
 		for (const std::string& libPath : lyLibPaths)
 		{
-			additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_LIB_PATH + libPath + "\" ";
+			additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_BIN_TEMP_PATH + libPath + "\" ";
 		}
 		//
 		// 3rd party
 		//
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR "Lua/5.1.1.8-az/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR "Lua/5.1.1.8-az/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR "zstd/1.35/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR "lz4/r128-pkg.2/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR "zlib/1.2.8-pkg.2/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
 		//
 		// Libraries
 		// TODO: link with the hot reload lib need to be gone in the future
 		//
 		std::string additionalLibs = "AzGameFramework.lib AzFramework.lib GridMate.lib GridMateForTools.lib CryAction_AutoFlowNode.lib AzCore.lib lua.lib zstd.lib lz4.lib zlib.lib User32.lib Advapi32.lib PsAPI.lib User32.lib Advapi32.lib PsAPI.lib bcrypt.lib gdi32.lib ";
-#if CPP_HOT_RELOAD_IS_DEBUG
-		additionalLibs += LUMBERYARD_CPP_HOT_RELOAD_BINARIES_PATH "x64/Debug/HotReload_x64_mdd.lib ";
-#else
-		additionalLibs += LUMBERYARD_CPP_HOT_RELOAD_BINARIES_PATH "x64/Release/HotReload_x64_md.lib ";
-#endif
 #elif CPP_HOT_RELOAD_PLATFORM_MAC
 #endif
         Compiler::Option compilerOptions[] =
@@ -91,7 +85,7 @@ namespace CppHotReload
 			{ Compiler::Prameter::CPP_LANGUAGE			, "objective-c++" },
 			{ Compiler::Prameter::CPP_LANGUAGE_DIALECT	, "c++14" },
 			{ Compiler::Prameter::ARCHITECTURE			, CPP_HOT_RELOAD_ARCH_NAME },
-			{ Compiler::Prameter::EXTRA_MACROS			, CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS },
+			{ Compiler::Prameter::SET_MACROS			, CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS },
 			{ Compiler::Prameter::SET_OPTIONS			, CPP_HOT_RELOAD_FORCE_COMPILE_OPTIONS },
 #if CPP_HOT_RELOAD_IS_DEBUG
 			{ Compiler::Prameter::IS_DEBUG, "YES" },
@@ -127,8 +121,8 @@ namespace CppHotReload
 		//
 		Configuration::EnvironmentVariable EnvironmentVariables[] =
 		{
-			{ "DevDir"	     , LUMBERYARD_CPP_HOT_RELOAD_DEV			},
-			{ "ThirdPartyDir", LUMBERYARD_CPP_HOT_RELOAD_THIRDPARTY_DIR },
+			{ "DevDir"	     , LUMBERYARD_DEV_DIR	     },
+			{ "ThirdPartyDir", LUMBERYARD_THIRDPARTY_DIR },
 		};
 		Configuration::CallBacks CallBacks[] =
 		{

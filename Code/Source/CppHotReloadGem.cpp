@@ -54,6 +54,7 @@ namespace CppHotReload
     class CppHotReloadModule
         : public CryHooksModule
         , public AZ::EntitySystemBus::Handler
+        , public AZ::SystemTickBus::Handler
     {
     private:
         enum class CppHotReloadStatus
@@ -83,17 +84,36 @@ namespace CppHotReload
                 CppHotReloadTestComponent::CreateDescriptor(),
             });
         }
-        
+
+        void OnSystemTick() override
+        {
+            if (CppHotReload::IsInitialized())
+            {
+                if (!CppHotReload::IsWorking())
+                {
+                    //CppHotReload::HotReload();
+                    CppHotReload::Update();
+                    CppHotReload::Purge();
+                }
+            }
+        }
+        //
+        // C++ Hot Reload is currently configured in the prototype during play mode
+        //
         void OnSystemEvent(ESystemEvent event, UINT_PTR wparam, UINT_PTR lparam) override
         {
             switch (event)
             {
             case ESYSTEM_EVENT_LEVEL_LOAD_START:
             {
+                AZ::EntitySystemBus::Handler::BusConnect();
+                AZ::SystemTickBus::Handler::BusConnect();
             }
             break;
             case ESYSTEM_EVENT_LEVEL_POST_UNLOAD:
             {
+                AZ::EntitySystemBus::Handler::BusDisconnect();
+                AZ::SystemTickBus::Handler::BusDisconnect();
             }
             break;
             case ESYSTEM_EVENT_GAME_POST_INIT:
@@ -112,7 +132,6 @@ namespace CppHotReload
                 {
                     LogFatal("C++ HotReload library not loaded!\n");
                 }
-                AZ::EntitySystemBus::Handler::BusConnect();
             }
             break;
             case ESYSTEM_EVENT_GAME_MODE_SWITCH_START:
@@ -148,8 +167,9 @@ namespace CppHotReload
             case ESYSTEM_EVENT_FULL_SHUTDOWN:
             {
                 if (m_ppHotReloadHandle)
+                {
                     CryFreeLibrary(m_ppHotReloadHandle);
-                AZ::EntitySystemBus::Handler::BusDisconnect();
+                }
             }
             break;
             }

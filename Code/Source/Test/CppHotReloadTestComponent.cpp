@@ -5,7 +5,7 @@
 void CppHotReloadTestComponent::Init()                 
 {          
 	m_moveSpeed = 0.1f;
-	m_movement = ZERO;     
+	m_movement = ZERO;      
 }     
   
 void CppHotReloadTestComponent::Activate()              
@@ -19,13 +19,13 @@ void CppHotReloadTestComponent::Activate()
 
 	m_initialPosition = localTransform.GetPosition();     
 } 
-
+ 
 void CppHotReloadTestComponent::Deactivate()  
 { 
 	AZ::TickBus::Handler::BusDisconnect();
 	AZ::TransformNotificationBus::Handler::BusDisconnect();
-}
-	  
+} 
+   
 void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time) 
 {
 	AZ::Transform localTransform = AZ::Transform::Identity();
@@ -45,7 +45,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 		//
 		// C++ Hot Reload
 		// 
-		m_movement.x = 10;   
+		m_movement.x = -20;  
 
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;
@@ -72,7 +72,7 @@ void CppHotReloadTestComponent::Reflect(AZ::ReflectContext* context)
 		AZ::EditContext* editContext = serializeContext->GetEditContext();
 		if (editContext)
 		{
-			editContext->Class<CppHotReloadTestComponent>("My Component", "The World's Most Clever Component")
+			editContext->Class<CppHotReloadTestComponent>("C++ Hot Reload - Test", "The World's Most Clever Component")
 				->ClassElement(AZ::Edit::ClassElements::EditorData, "")
 				->Attribute("Category", "Test")
 				->Attribute("AutoExpand", true)
