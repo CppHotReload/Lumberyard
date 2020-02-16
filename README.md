@@ -3,23 +3,10 @@
 - C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now.
 - **Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
 
-## Before the installation steps
-At the moment you'll need comment 1 line in the source code of Ly. There is no other solution as Components has no public method to SetEntity(nullptr). As the new build version restore the base classes, SwapComponents will assert. Basically open Entity.h and search for ::SwapComponents, make it look like this:
-```
-bool Entity::SwapComponents(Component* componentToRemove, Component* componentToAdd)
-{
-    AZ_Assert(componentToRemove && componentToAdd, "Invalid component");
-    AZ_Assert(CanAddRemoveComponents(), "Can't remove component while the entity is active!");
-    AZ_Assert(!componentToRemove->GetEntity() || componentToRemove->GetEntity() == this, "Component doesn't belong to this entity %p [0x%llx] it belongs to %p [0x%llx]", this, m_id, componentToRemove->m_entity, componentToRemove->m_entity->GetId());
-    //AZ_Assert(componentToAdd->GetEntity() == nullptr, "Component already belongs to this entity %p [0x%llx]", componentToAdd->m_entity, componentToAdd->m_entity->GetId());
-
-    if (!CanAddRemoveComponents())
-```
-
-
 ## Installation
 1. Download this repository and place it on the Gems folder
 2. Configure your project to include C++ Hot Reload Gem
+   - **You can see the configuration file for SamplesProject in the Gem folder Configs as Config_For_SamplesProject.h**
 3. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadConfig.h
 4. Configure the paths to your project directory
    - C++ Hot Reload gem, comes by default pointing to its Test folder, a Component you can add first to check everything it's ok
