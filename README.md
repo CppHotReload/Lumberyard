@@ -6,7 +6,7 @@
 ## Installation
 1. Download this repository and place it on the Gems folder
 2. Configure your project to include C++ Hot Reload Gem
-   - **You can see the configuration file for SamplesProject in the Gem folder Configs as Config_For_SamplesProject.h**
+   - **You can see the final configuration file for SamplesProject at gems_dir/CppHotReload/Configs/Config_For_SamplesProject.h**
 3. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadConfig.h
 4. Configure the paths to your project directory
    - C++ Hot Reload gem, comes by default pointing to its Test folder, a Component you can add first to check everything it's ok
