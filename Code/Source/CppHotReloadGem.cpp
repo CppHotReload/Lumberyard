@@ -3,6 +3,7 @@
 //
 
 #include "StdAfx.h"
+#include <platform_impl.h>
 #include <IGem.h>
 #include <CryLibrary.h>
 //

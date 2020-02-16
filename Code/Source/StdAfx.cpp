@@ -3,8 +3,4 @@
 //
 
 #include "StdAfx.h"
-//
-// Note: this file is not ready to be included in all headers but needed for linking
-//
-#include <platform_impl.h>
  
