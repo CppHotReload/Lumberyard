@@ -1,6 +1,7 @@
 # Lumberyard
-Prototype plugin for Ly
-**Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
+- Prototype plugin for Ly. 
+- C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now.
+- **Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
 
 ## Installation
 1. Download this repository and place it on the Gems folder
