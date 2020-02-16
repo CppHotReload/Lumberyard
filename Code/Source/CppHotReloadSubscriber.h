@@ -29,8 +29,10 @@ namespace CppHotReload
         AZ::Component* component;
     };
     extern AZStd::vector<HotReloadPtr> hotReloadSubscribers;
+    extern AZStd::vector<HotReloadPtr> hotReloadSubscribersToUnsubscribe;
 
     void SubscribeToHotReload(const HotReloadPtr& hotReloadPtr);
+    AZStd::string GetGuidFromSubscriber(AZ::Component* component);
     void UpdateHotReloadSubscriber(const HotReloadPtr& hotReloadPtr);
     void UnsubscribeToHotReload(AZ::Component*);
 

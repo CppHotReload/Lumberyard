@@ -32,26 +32,7 @@
 // Illustrates all C++ Hot Reload events, just logging information
 //
 namespace CppHotReload
-{
-	struct ReloadInstance
-	{
-		AZStd::string typeName;
-		void* data;
-		AZStd::string uuid;
-	};
-	extern AZStd::vector<ReloadInstance> didReloadInstances;
-}
-namespace CppHotReload
 {	
-	AZStd::vector<CppHotReload::ReloadInstance> CppHotReload::didReloadInstances;
-	void HotReload()
-	{
-		for (const ReloadInstance& reloadInstance : didReloadInstances)
-		{
-			
-		}
-		didReloadInstances.clear();
-	}
 	//
 	// BeginReload and EngReload are triggered in 2 phases:
 	// 1.- When in the background files are processed, new libraries are build, loaded
@@ -113,20 +94,35 @@ namespace CppHotReload
 
 	void DidReloadInstance(const char* const typeName, void*& data, const char* uuid)
 	{
-		//didReloadInstances.emplace_back(ReloadInstance{typeName, data, uuid});
-		for (const HotReloadPtr& subscriber : hotReloadSubscribers)
+		HotReloadPtr subscriber;
+		subscriber.component = nullptr; 
+		for (const HotReloadPtr& currSubscriber : hotReloadSubscribers)
 		{
-			if (subscriber.guid == uuid)
+			if (currSubscriber.guid == uuid)
 			{
-				auto newComponent = reinterpret_cast<AZ::Component*>(data);
-				subscriber.entity->Deactivate();
-				subscriber.entity->SwapComponents(subscriber.component, newComponent);
-				subscriber.entity->Activate();
-				UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
-
-				AZ_Printf("C++ Hot Reload", "DidReloadInstance: Type %s with id %s reloaded\n", typeName, uuid);
+				subscriber = currSubscriber;
 				break;
 			}
+		}
+
+		if (subscriber.component)
+		{
+			auto newComponent = reinterpret_cast<AZ::Component*>(data);
+			//
+			// Swap components for the active components. Normally because the user is in play mode
+			//
+			if (subscriber.component->GetEntity())
+			{
+				if (subscriber.entity)
+				{
+					subscriber.entity->Deactivate();
+					subscriber.entity->SwapComponents(subscriber.component, newComponent);
+					subscriber.entity->Activate();
+					AZ_Printf("C++ Hot Reload", "DidReloadInstance: Type %s with id %s reloaded\n", typeName, uuid);
+				}
+			}
+
+			UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
 		}
 	}
 

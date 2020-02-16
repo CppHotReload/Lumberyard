@@ -67,7 +67,6 @@ namespace CppHotReload
         CppHotReloadStatus cppHotReloadStatus;
         */
         void* m_ppHotReloadHandle;
-        bool  m_isAllowToRegisterComponents;
 
     public:
         AZ_RTTI(CppHotReloadModule, "{9462F100-77B6-4096-A259-4A1A8D4A7C82}", AZ::Module);
@@ -76,7 +75,6 @@ namespace CppHotReload
         CppHotReloadModule()
             : CryHooksModule()
             , m_ppHotReloadHandle(nullptr)
-            , m_isAllowToRegisterComponents(false)
         {
             m_descriptors.insert(m_descriptors.end(), 
             {
@@ -90,14 +88,11 @@ namespace CppHotReload
             // Noete: during prototype face execute this on the background while the dlls are not created will make lose the ability to place breakpoints
             // So, I only update C++ Hot Reload if we are going to reload something...
             //
-            if (m_isAllowToRegisterComponents)
+            if (!CppHotReload::IsWorking())
             {
-                if (!CppHotReload::IsWorking())
-                {
-                    //CppHotReload::HotReload();
-                    CppHotReload::Update();
-                    CppHotReload::Purge();
-                }
+                //CppHotReload::HotReload();
+                CppHotReload::Update();
+                CppHotReload::Purge();
             }
         }
         //
@@ -138,7 +133,6 @@ namespace CppHotReload
             }
             break;
             case ESYSTEM_EVENT_GAME_MODE_SWITCH_START:
-                m_isAllowToRegisterComponents = (wparam == 1) ? true : false;
                 break;
             case ESYSTEM_EVENT_GAME_MODE_SWITCH_END:
                 break;
@@ -178,19 +172,19 @@ namespace CppHotReload
         {
             const AZStd::string& msg = entityId.ToString() + " OnEntityInitialized";
             LogSystem(msg.c_str());
+            RegisterEntityComponents(entityId);
         }
         void OnEntityDestroyed(const AZ::EntityId& entityId) override
         {
             const AZStd::string& msg = entityId.ToString() + " OnEntityDestroyed";
             LogSystem(msg.c_str());
+            UnregisterEntityComponents(entityId);
         }
         void OnEntityActivated(const AZ::EntityId& entityId) override
         {
-            RegisterEntityComponents(entityId);
         }
         void OnEntityDeactivated(const AZ::EntityId& entityId) override
         {
-            UnregisterEntityComponents(entityId);
         }
         //void OnEntityNameChanged(const AZ::EntityId& entityId, const AZStd::string& name) override;
 
@@ -209,9 +203,6 @@ namespace CppHotReload
 
         void RegisterEntityComponents(const AZ::EntityId& entityId)
         {
-            if (!m_isAllowToRegisterComponents)
-                return;
-
             AZ::Entity* entity = GetEntityById(entityId);
             if (entity != nullptr)
             {
@@ -232,9 +223,6 @@ namespace CppHotReload
 
         void UnregisterEntityComponents(const AZ::EntityId& entityId)
         {
-            if (!m_isAllowToRegisterComponents)
-                return;
-
             AZ::Entity* entity = GetEntityById(entityId);
             if (entity != nullptr)
             {
@@ -244,9 +232,9 @@ namespace CppHotReload
                 {  
                     if (!currComponent)
                         continue;
-                    const AZStd::string& componentId = AZStd::to_string(currComponent->GetId());  
+                    const AZStd::string& uuid = CppHotReload::GetGuidFromSubscriber(currComponent);
                     const AZStd::string& className = currComponent->RTTI_GetTypeName();
-                    CppHotReload::UnregisterPtr(className.c_str(), reinterpret_cast<void*>(currComponent), componentId.c_str());
+                    CppHotReload::UnregisterPtr(className.c_str(), reinterpret_cast<void*>(currComponent), uuid.c_str());
                     CppHotReload::UnsubscribeToHotReload(currComponent);
                 }
             }

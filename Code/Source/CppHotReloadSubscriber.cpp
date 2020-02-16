@@ -27,6 +27,18 @@ namespace CppHotReload
         hotReloadSubscribers.emplace_back(hotReloadPtr);
     }
 
+    AZStd::string GetGuidFromSubscriber(AZ::Component* component)
+    {
+        for (AZStd::vector<HotReloadPtr>::iterator it = hotReloadSubscribers.begin(); it != hotReloadSubscribers.end(); ++it)
+        {
+            if (it->component == component)
+            {
+                return it->guid;
+            }
+        }
+        return "";
+    }
+
     void UpdateHotReloadSubscriber(const HotReloadPtr& hotReloadPtr)
     {
         for (AZStd::vector<HotReloadPtr>::iterator it = hotReloadSubscribers.begin(); it != hotReloadSubscribers.end(); ++it)

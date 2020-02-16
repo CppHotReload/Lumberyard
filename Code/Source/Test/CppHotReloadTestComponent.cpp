@@ -45,7 +45,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 		//
 		// C++ Hot Reload
 		// 
-		m_movement.x = 100;     
+		m_movement.x = 100;       
 
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;
