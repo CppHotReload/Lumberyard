@@ -2,6 +2,18 @@
 //  Copyright (c) since 2014 - 2020 C++ Hot Reload SL. All rights reserved
 //
 
+//
+// Environment Variables available:
+// FileName
+// Name
+// ModuleName
+// TypeName
+// KeyName
+// Uuid
+// Version
+//
+#include "StdAfx.h"
+#include <platform_impl.h>
 #include <IGem.h>
 #include <AzCore/Component/Component.h>
 
@@ -27,12 +39,12 @@ namespace CppHotReload
             //
             // Say goodbye to the previous component
             //
-            AZ::ComponentDescriptor* descriptor = GetCurrentDescriptor<$(ModuleName)>();
+            AZ::ComponentDescriptor* descriptor = GetCurrentDescriptor<$(KeyName)>();
             descriptor->ReleaseDescriptor();	// Deletes and "un-reflects" the descriptor
             //
             // Prepare to register the new component descriptor following the standards of Ly
             //
-            m_descriptors.push_back($(ModuleName)::CreateDescriptor());
+            m_descriptors.push_back($(KeyName)::CreateDescriptor());
         }
         AZ::ComponentTypeList GetRequiredSystemComponents() const override
         {

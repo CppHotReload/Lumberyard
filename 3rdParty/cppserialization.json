@@ -8,7 +8,8 @@
         "win_x64_vs2017": {
             "libpath"       : ["lib/x64"],
             "lib_debug"     : ["CppSerialization_x64_mdd.lib"],
-            "lib_profile"   : ["CppSerialization_x64_md.lib"]
+            "lib_profile"   : ["CppSerialization_x64_md.lib"],
+            "lib_release"   : ["CppSerialization_x64_md.lib"]
         }
     }
 }

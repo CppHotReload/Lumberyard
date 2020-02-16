@@ -59,7 +59,7 @@ namespace CppHotReload
 		std::string additionalLibPaths;
 		for (const std::string& libPath : lyLibPaths)
 		{
-			additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_BIN_TEMP_PATH + libPath + "\" ";
+			additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_BIN_TEMP_DIR + libPath + "\" ";
 		}
 		//
 		// 3rd party
@@ -75,7 +75,7 @@ namespace CppHotReload
 		std::string additionalLibs = "AzGameFramework.lib AzFramework.lib GridMate.lib GridMateForTools.lib CryAction_AutoFlowNode.lib AzCore.lib lua.lib zstd.lib lz4.lib zlib.lib User32.lib Advapi32.lib PsAPI.lib User32.lib Advapi32.lib PsAPI.lib bcrypt.lib gdi32.lib ";
 #elif CPP_HOT_RELOAD_PLATFORM_MAC
 #endif
-        Compiler::Option compilerOptions[] =
+        Compiler::Option CompilerOptions[] =
         {
 			{ Compiler::Prameter::OS_MIN_VERSION		, "10.13.0" },
 			{ Compiler::Prameter::CPP_LANGUAGE			, "objective-c++" },
@@ -91,7 +91,7 @@ namespace CppHotReload
 #endif
         };
 
-		Linker::Option linkerOptions[] =
+		Linker::Option LinkerOptions[] =
         {
 			{ Linker::Prameter::SET_OPTIONS			, CPP_HOT_RELOAD_FORCE_LINK_OPTIONS },
 			{ Linker::Prameter::ADDITIONAL_LIB_PATHS, additionalLibPaths.c_str() },
@@ -106,7 +106,7 @@ namespace CppHotReload
 		//
 		// Ly C++ Hot Reload configuration
 		//
-		Configuration::Option configurationOptions[] =
+		Configuration::Option ConfigurationOptions[] =
 		{
 			{ Configuration::Prameter::NEW_OBJECT	  , "AUTO" },
 			{ Configuration::Prameter::PARSE_ON_DEMAND, "YES" },
@@ -117,8 +117,9 @@ namespace CppHotReload
 		//
 		Configuration::EnvironmentVariable EnvironmentVariables[] =
 		{
-			{ "DevDir"	     , LUMBERYARD_DEV_DIR	     },
+			{ "DevDir"		 , LUMBERYARD_DEV_DIR		 },
 			{ "ThirdPartyDir", LUMBERYARD_THIRDPARTY_DIR },
+			{ "BinTemp"		 , LUMBERYARD_BIN_TEMP_DIR	 },
 		};
 		Configuration::CallBacks CallBacks[] =
 		{
@@ -135,9 +136,9 @@ namespace CppHotReload
 												  , IncludeDirectoriesFile.c_str()
 												  , EnvironmentVariables, static_cast<unsigned short>(countOf(EnvironmentVariables))
 												  , CallBacks			, static_cast<unsigned short>(countOf(CallBacks))
-												  , configurationOptions, static_cast<unsigned short>(countOf(configurationOptions))
-												  , compilerOptions     , static_cast<unsigned short>(countOf(compilerOptions))
-												  , linkerOptions       , static_cast<unsigned short>(countOf(linkerOptions))
+												  , ConfigurationOptions, static_cast<unsigned short>(countOf(ConfigurationOptions))
+												  , CompilerOptions     , static_cast<unsigned short>(countOf(CompilerOptions))
+												  , LinkerOptions       , static_cast<unsigned short>(countOf(LinkerOptions))
 												  , CppHotReloadTempDir.c_str(), licenseGuid.c_str());
     }
 	//

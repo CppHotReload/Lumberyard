@@ -231,7 +231,7 @@ namespace CppHotReload
                     const AZStd::string& guid = CppHotReload::RegisterPtr(typeName.c_str(), reinterpret_cast<void*>(currComponent));
                     CppHotReload::SubscribeToHotReload(CppHotReload::HotReloadPtr { guid, entity, currComponent, type });
 
-                    AZ_Printf("C++ Hot Reload", false, "Component with id: %s registered for C++ Hot Reload\n", guid.c_str());
+                    AZ_Printf("C++ Hot Reload", "Component with id: %s registered for C++ Hot Reload\n", guid.c_str());
                 }
             }
         }
@@ -262,7 +262,7 @@ namespace CppHotReload
                     CppHotReload::UnregisterPtr(typeName.c_str(), reinterpret_cast<void*>(currComponent), uuid.c_str());
                     CppHotReload::UnsubscribeToHotReload(currComponent, type);
 
-                    AZ_Printf("C++ Hot Reload", false, "Component template with id: %s unregistered for C++ Hot Reload\n", uuid.c_str());
+                    AZ_Printf("C++ Hot Reload", "Component template with id: %s unregistered for C++ Hot Reload\n", uuid.c_str());
                 }
             }
         }
