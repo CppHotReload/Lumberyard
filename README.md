@@ -37,8 +37,9 @@ This should be all for SamplesProject. However you project can be more complex t
 ```
 Configuration::EnvironmentVariable EnvironmentVariables[] =
 {
-	{ "DevDir"	     , LUMBERYARD_DEV_DIR },
-	{ "ThirdPartyDir", LUMBERYARD_THIRDPARTY_DIR },
+    { "DevDir"		, LUMBERYARD_DEV_DIR },
+    { "ThirdPartyDir"	, LUMBERYARD_THIRDPARTY_DIR },
+    { "BinTemp"		, LUMBERYARD_BIN_TEMP_DIR },
 };
 ```
 3. Follow the pattern adding your libraries and include paths
