@@ -49,3 +49,6 @@ Configuration::EnvironmentVariable EnvironmentVariables[] =
 ## More info
 To have a bit more information check the documentation of UE4. The version of C++ Hot Reload for Ly is more modern, however all the documentation regarding C++ Hot Reload is valid for Lumberyard.
 www.hotreload.tech/UE4
+
+## Youtube playlist for the prototype integration
+https://www.youtube.com/playlist?list=PLHW7E3f3ce1kiKQwqlRx804_JEH-vOpbg
