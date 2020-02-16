@@ -19,7 +19,7 @@
    - Let's change it for:
      * `#define LUMBERYARD_GAME_PATH			LUMBERYARD_ROOT LUMBERYARD_GAME_NAME "/Gem/Code/Source/Game/"`
    - Time to locate the PCH, search for the macro `LUMBERYARD_GAME_PCH_PATH` and change it as follows
-     * `#define LUMBERYARD_GAME_PCH_PATH LUMBERYARD_BIN_TEMP_PATH LUMBERYARD_GAME_NAME "/Gem/Code/Source/Game/"
+     * `#define LUMBERYARD_GAME_PCH_PATH LUMBERYARD_BIN_TEMP_PATH LUMBERYARD_GAME_NAME "/Gem/Code/Source/Game/"`
    - Lumberyard build system package id, or how I call it now: `CPP_HOT_RELOAD_PCH_UNKNOWN_NUMBER` an id I don't know yet how to take it automatically. So please search for that number id when you build your project. In the same PCH folder you'll see a filename like this: `StdAfx.2693633.pch`, copy that number in between `StdAfx.__NUMBER__.pch` and assign that value:
      * `#define CPP_HOT_RELOAD_PCH_UNKNOWN_NUMBER "2693633"`
 5. This should be all for SamplesProject. However you project can be more complex than that have other dependencies, 3rdParty libs, etc. Try to follow the UE4 documentation if you have doubts in the link below
