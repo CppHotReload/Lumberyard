@@ -33,7 +33,7 @@ namespace CppHotReload
         //
         // C++ Hot Reload license key - Community
         //
-        const std::string& licenseGuid = "60cae9c7-a03d-4b51-a131-b605edfd38a1";
+        const std::string& licenseGuid = "1a2a4b66-b878-43a3-8308-39b24bd41106";
 		const std::string& CppHotReloadTempDir = LUMBERYARD_CPP_HOT_RELOAD_BINARIES_PATH "../Intermediate";
         //
         // Scripts files
