@@ -1,8 +1,5 @@
 //
-//  Copyright (c) 2014 - 2019 C++ Hot Reload SL. All rights reserved
-//
-//  This file is subject to the terms and conditions defined in
-//  file 'LICENSE.txt', which is part of this source code package.
+//  Copyright (c) since 2014 - 2020 C++ Hot Reload SL. All rights reserved
 //
 
 #include "StdAfx.h"

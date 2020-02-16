@@ -1,3 +1,7 @@
+//
+//  Copyright (c) since 2014 - 2020 C++ Hot Reload SL. All rights reserved
+//
+
 #pragma once
 #include "StdAfx.h"
 #include "CppHotReloadTestComponent.h"

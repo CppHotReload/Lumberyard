@@ -1,6 +1,7 @@
 //
-// TODO: https://docs.aws.amazon.com/lumberyard/latest/userguide/asset-pipeline-developers.html
+//  Copyright (c) since 2014 - 2020 C++ Hot Reload SL. All rights reserved
 //
+
 #pragma once
 #ifdef _MSC_VER
 #	define CPP_HOT_RELOAD_PLATFORM_WINDOWS 1
