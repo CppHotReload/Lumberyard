@@ -19,14 +19,18 @@ namespace AZ
 }
 namespace CppHotReload
 {
-    //
-    // TODO: only for the prototype, it's used in Events
-    //
+    enum class ComponentType
+    {
+        EDITOR,
+        GENERIC,
+        INSTANCE
+    };
     struct HotReloadPtr
     {
         AZStd::string guid;
         AZ::Entity* entity;
         AZ::Component* component;
+        ComponentType type;
     };
     extern AZStd::vector<HotReloadPtr> hotReloadSubscribers;
     extern AZStd::vector<HotReloadPtr> hotReloadSubscribersToUnsubscribe;
@@ -34,7 +38,7 @@ namespace CppHotReload
     void SubscribeToHotReload(const HotReloadPtr& hotReloadPtr);
     AZStd::string GetGuidFromSubscriber(AZ::Component* component);
     void UpdateHotReloadSubscriber(const HotReloadPtr& hotReloadPtr);
-    void UnsubscribeToHotReload(AZ::Component*);
+    void UnsubscribeToHotReload(AZ::Component* component, ComponentType type);
 
     void* GetGlobalEnvironment();
 }

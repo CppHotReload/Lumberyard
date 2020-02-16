@@ -9,6 +9,7 @@
 #include <AzCore/Component/EntityBus.h>
 #include <AzCore/Component/Entity.h>
 #include <AzCore/std/string/conversions.h>
+#include <AzToolsFramework/ToolsComponents/GenericComponentWrapper.h>
 //
 // C++ Hot Reload
 //
@@ -90,7 +91,6 @@ namespace CppHotReload
             //
             if (!CppHotReload::IsWorking())
             {
-                //CppHotReload::HotReload();
                 CppHotReload::Update();
                 CppHotReload::Purge();
             }
@@ -210,12 +210,23 @@ namespace CppHotReload
 
                 for (AZ::Component* currComponent : components)      
                 {  
-                    if (!currComponent)
-                        continue;
+                    CppHotReload::ComponentType type = CppHotReload::ComponentType::INSTANCE;
+
+                    if (auto genericComponentWrapper = azrtti_cast<AzToolsFramework::Components::GenericComponentWrapper*>(currComponent))
+                    {
+                        type = CppHotReload::ComponentType::GENERIC;
+                        currComponent = genericComponentWrapper->GetTemplate();
+                    }
+                    else if (auto genericComponentEditor = azrtti_cast<AzToolsFramework::Components::EditorComponentBase*>(currComponent))
+                    {
+                        type = CppHotReload::ComponentType::EDITOR;
+                    }
+
                     const AZStd::string& componentId = AZStd::to_string(currComponent->GetId());  
-                    const AZStd::string& className = currComponent->RTTI_GetTypeName();
-                    const AZStd::string& guid = CppHotReload::RegisterPtr(className.c_str(), reinterpret_cast<void*>(currComponent));
-                    CppHotReload::SubscribeToHotReload(CppHotReload::HotReloadPtr { guid, entity, currComponent });
+                    const AZStd::string& typeName = currComponent->RTTI_GetTypeName();
+                    const AZStd::string& guid = CppHotReload::RegisterPtr(typeName.c_str(), reinterpret_cast<void*>(currComponent));
+                    CppHotReload::SubscribeToHotReload(CppHotReload::HotReloadPtr { guid, entity, currComponent, type });
+
                     AZ_Warning("C++ Hot Reload", false, "Component with id: %s registered for C++ Hot Reload\n", guid.c_str());
                 }
             }
@@ -230,12 +241,24 @@ namespace CppHotReload
 
                 for (AZ::Component* currComponent : components)      
                 {  
-                    if (!currComponent)
-                        continue;
+                    CppHotReload::ComponentType type = CppHotReload::ComponentType::INSTANCE;
+
+                    if (auto genericComponentWrapper = azrtti_cast<AzToolsFramework::Components::GenericComponentWrapper*>(currComponent))
+                    {
+                        type = CppHotReload::ComponentType::GENERIC;
+                        currComponent = genericComponentWrapper->GetTemplate();
+                    }
+                    else if (auto genericComponentEditor = azrtti_cast<AzToolsFramework::Components::EditorComponentBase*>(currComponent))
+                    {
+                        type = CppHotReload::ComponentType::EDITOR;
+                    }
+
                     const AZStd::string& uuid = CppHotReload::GetGuidFromSubscriber(currComponent);
-                    const AZStd::string& className = currComponent->RTTI_GetTypeName();
-                    CppHotReload::UnregisterPtr(className.c_str(), reinterpret_cast<void*>(currComponent), uuid.c_str());
-                    CppHotReload::UnsubscribeToHotReload(currComponent);
+                    const AZStd::string& typeName = currComponent->RTTI_GetTypeName();
+                    CppHotReload::UnregisterPtr(typeName.c_str(), reinterpret_cast<void*>(currComponent), uuid.c_str());
+                    CppHotReload::UnsubscribeToHotReload(currComponent, type);
+
+                    AZ_Warning("C++ Hot Reload", false, "Component template with id: %s unregistered for C++ Hot Reload\n", uuid.c_str());
                 }
             }
         }

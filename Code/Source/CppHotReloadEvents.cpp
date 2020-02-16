@@ -96,6 +96,9 @@ namespace CppHotReload
 	{
 		HotReloadPtr subscriber;
 		subscriber.component = nullptr; 
+		//
+		// Search component by instance
+		//
 		for (const HotReloadPtr& currSubscriber : hotReloadSubscribers)
 		{
 			if (currSubscriber.guid == uuid)
@@ -121,8 +124,11 @@ namespace CppHotReload
 					AZ_Printf("C++ Hot Reload", "DidReloadInstance: Type %s with id %s reloaded\n", typeName, uuid);
 				}
 			}
-
-			UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
+			else
+			{
+				subscriber.component = newComponent;
+			}
+			//UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
 		}
 	}
 

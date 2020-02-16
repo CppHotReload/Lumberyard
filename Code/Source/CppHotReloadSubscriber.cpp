@@ -51,7 +51,7 @@ namespace CppHotReload
         }
     }
 
-    void UnsubscribeToHotReload(AZ::Component* component)
+    void UnsubscribeToHotReload(AZ::Component* component, ComponentType type)
     {
         for (AZStd::vector<HotReloadPtr>::iterator it = hotReloadSubscribers.begin(); it != hotReloadSubscribers.end(); ++it)
         {
