@@ -52,3 +52,56 @@ www.hotreload.tech/UE4
 
 ## Youtube playlist for the prototype integration
 https://www.youtube.com/playlist?list=PLHW7E3f3ce1kiKQwqlRx804_JEH-vOpbg
+
+# Good practices
+How to easily cut by half the reloading time?
+First off, my machine: Corei7-4790 CPU @ 3.60GHz, 3601 Mhz, 4 Core(s), 8 Logical Processor(s) - and the project in a SSD.
+A very common machine, however C++ Hot Reload will depend on your include configuration, reloading the default written component `WayPointManagerComponent` takes around **8-10 seconds**. 
+
+The current situation on the include files in `WayPointManagerComponent.h` file are:
+```
+#include <AzCore/Component/Component.h>
+#include <AzCore/Component/Entity.h>
+#include <AzCore/Math/Vector3.h>
+#include <AzCore/Component/TransformBus.h>
+```
+And the cpp file includes are:
+```
+#include "StdAfx.h"
+#include "WayPointManagerComponent.h"
+
+#include <AzCore/RTTI/BehaviorContext.h>
+#include <AzCore/Serialization/SerializeContext.h>
+#include <AzCore/Serialization/EditContext.h>
+```
+
+If you move to the PCH file, StdAfx.h the following includes files as follows
+```
+... 
+
+#include <AzCore/Component/Component.h>
+#include <AzCore/Component/Entity.h>
+#include <AzCore/Math/Vector3.h>
+#include <AzCore/Component/TransformBus.h>
+#include <AzCore/RTTI/BehaviorContext.h>
+#include <AzCore/Serialization/SerializeContext.h>
+#include <AzCore/Serialization/EditContext.h>
+#include "Game/WayPointManagerBus.h"
+```
+`WayPointManagerComponent.h` as follows (yes, empty)
+```
+#pragma once
+```
+`WayPointManagerComponent.cpp` as follows
+```
+#include "StdAfx.h"
+#include "WayPointManagerComponent.h"
+```
+
+C++ Hot Reload will have the following statistics:
+**Reload time:  5.33316 seconds**
+Setup time:   0.0139533 seconds
+Compile time: 3.79052 seconds
+Link time:    1.52869 seconds
+
+**So kind of the half in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations.
