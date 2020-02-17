@@ -99,9 +99,9 @@ If you move to the PCH file, StdAfx.h the following includes files as follows
 ```
 
 C++ Hot Reload will have the following statistics:
-**Reload time:  5.33316 seconds**
-Setup time:   0.0139533 seconds
-Compile time: 3.79052 seconds
-Link time:    1.52869 seconds
+- **Reload time:  5.33316 seconds**
+- Setup time:   0.0139533 seconds
+- Compile time: 3.79052 seconds
+- Link time:    1.52869 seconds
 
-**So kind of the half in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations.
+**So a big cut in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations. My personal recommendation is that you make your components normally and keep up-to-date your PCH file and your components includes cleaned.
