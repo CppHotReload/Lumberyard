@@ -30,6 +30,10 @@ namespace CppHotReload
     //
     void InitHotReload()
     {
+		//
+		// Let's get first at runtime the proper paths of the application
+		//
+		LocateProjectPaths();
         //
         // C++ Hot Reload license key - Community
         //
@@ -40,7 +44,7 @@ namespace CppHotReload
         //
         const char* filesDirectories[] =
         {
-			LUMBERYARD_GAME_PATH
+			LUMBERYARD_GAME_DIR
         };
         //
         // Prepare pre-processor macros

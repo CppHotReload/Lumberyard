@@ -12,6 +12,7 @@
         "Source": [
             "Source/CppHotReloadGem.cpp",
             "Source/CppHotReloadConfig.h",
+            "Source/CppHotReloadConfig.cpp",
             "Source/CppHotReloadCustomContructors.h",
             "Source/CppHotReloadLyHook.h",
             "Source/CppHotReloadEvents.h",

@@ -12,7 +12,7 @@
 #endif
 #define CPP_HOT_RELOAD_VERSION		"0.9.98"
 #define LUMBERYARD_ROOT				"E:/Amazon/Lumberyard_1.22/"
-#define LUMBERYARD_GAME_NAME		"Gems/CppHotReload"				// pointing the Gem dir for the prototype
+#define LUMBERYARD_GAME_NAME		"SamplesProject"				// pointing the Gem dir for the prototype
 #define LUMBERYARD_DEV_DIR			LUMBERYARD_ROOT "dev/"
 #define LUMBERYARD_THIRDPARTY_DIR	LUMBERYARD_ROOT	"3rdParty/"
 #define LUMBERYARD_GEMS_DIR			LUMBERYARD_DEV_DIR  "Gems/"
@@ -23,8 +23,8 @@
 //
 // Configured only with the Test folder for the prototype
 //
-#define LUMBERYARD_CPP_HOT_RELOAD_DIR	LUMBERYARD_GEMS_DIR "CppHotReload/"
-#define LUMBERYARD_GAME_PATH			LUMBERYARD_DEV_DIR LUMBERYARD_GAME_NAME "/Code/Source/Test/"
+#define LUMBERYARD_CPP_HOT_RELOAD_DIR LUMBERYARD_GEMS_DIR "CppHotReload/"
+#define LUMBERYARD_GAME_DIR LUMBERYARD_DEV_DIR LUMBERYARD_GAME_NAME "/Gem/Code/Source/Game/"
 //
 // Build configuration
 //
@@ -41,7 +41,7 @@
 // Locate pch 
 //
 #define LUMBERYARD_BIN_TEMP_DIR  LUMBERYARD_DEV_DIR "BinTemp/" LUMBERYARD_BIN_CONFIG_DIR		// Where is the PCH file
-#define LUMBERYARD_GAME_PCH_PATH LUMBERYARD_BIN_TEMP_DIR LUMBERYARD_GAME_NAME "/Code/Source/"
+#define LUMBERYARD_GAME_PCH_PATH LUMBERYARD_BIN_TEMP_DIR LUMBERYARD_GAME_NAME "/Gem/Code/"
 
 #if CPP_HOT_RELOAD_PLATFORM_WINDOWS
 #	define CPP_HOT_RELOAD_PLATFORM_NAME "Windows"
@@ -60,12 +60,12 @@
 //
 // PCH, pch object filename location...
 //
-#	define CPP_HOT_RELOAD_PCH_NAME "StdAfx"
-#	define CPP_HOT_RELOAD_PCH_INCLUDE_NAME CPP_HOT_RELOAD_PCH_NAME ".h"
-#	define CPP_HOT_RELOAD_PCH_UNKNOWN_NUMBER "2693633"                                        // <-- no clue how to get this number
+#	define LUMBERYARD_PCH_NAME "StdAfx"
+#	define CPP_HOT_RELOAD_PCH_INCLUDE_NAME LUMBERYARD_PCH_NAME ".h"
+#	define CPP_HOT_RELOAD_TARGET_UID "2581533"										// <-- no clue how to get this number
 
-#	define CPP_HOT_RELOAD_PCH_FILENAME LUMBERYARD_GAME_PCH_PATH CPP_HOT_RELOAD_PCH_NAME "." CPP_HOT_RELOAD_PCH_UNKNOWN_NUMBER ".pch"
-#	define CPP_HOT_RELOAD_PCH_OBJ_FILENAME LUMBERYARD_GAME_PCH_PATH CPP_HOT_RELOAD_PCH_NAME "." CPP_HOT_RELOAD_PCH_UNKNOWN_NUMBER ".obj"
+#	define CPP_HOT_RELOAD_PCH_FILENAME LUMBERYARD_GAME_PCH_PATH LUMBERYARD_PCH_NAME "." CPP_HOT_RELOAD_TARGET_UID ".pch"
+#	define CPP_HOT_RELOAD_PCH_OBJ_FILENAME LUMBERYARD_GAME_PCH_PATH LUMBERYARD_PCH_NAME "." CPP_HOT_RELOAD_TARGET_UID ".obj"
 //
 // Force to include custom constructor and the pch
 //
@@ -84,3 +84,8 @@
 #		define CPP_HOT_RELOAD_VS_VAR_ALL "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\""
 #	endif
 #endif
+
+namespace CppHotReload
+{
+	void LocateProjectPaths();
+}

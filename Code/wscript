@@ -14,9 +14,9 @@ def build(bld):
                           ],
         pch             = 'Source/StdAfx.cpp',
         defines         = ['CPP_HOT_RELOAD'],
-        use             = ['AzCore'],
+        use             = ['AzFramework'],
         platforms       = ['win'],
-        win_features    = ['crcfix'],
+        win_features    = ['crcfix', 'ZLIB'],
         configurations  = ['debug', 'profile'],
         uselib          = ['CPPHOTRELOAD', 'CPPSERIALIZATION']
         #
