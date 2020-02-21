@@ -122,6 +122,8 @@ namespace CppHotReload
 	void LocateProjectPaths()
 	{
 		AZ::IO::FileIOBase* fileIO = AZ::IO::FileIOBase::GetInstance();
+		AZ::IO::FileIOBase* fileSystem = AZ::IO::FileIOBase::GetDirectInstance();
+
 		ROOT_DIR			= fileIO->GetAlias("@root@");
 		ENGINE_DIR			= fileIO->GetAlias("@engroot@");
 		DEV_DIR				= fileIO->GetAlias("@devroot@");
@@ -215,66 +217,83 @@ namespace CppHotReload
 		GAME_DIR = DEV_DIR + "/" + GAME_NAME;
 		if (!ResolveAndCheckPath(GAME_DIR))
 			return;
-#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
-		//
-		// FInd PCH and OBJ of the PCH
-		//
-		BIN_TEMP_DIR = DEV_DIR + "/BinTemp/" + LUMBERYARD_BIN_CONFIG_DIR;
-		if (!ResolveAndCheckPath(BIN_TEMP_DIR))
-			return;
-		AZ::IO::FileIOBase* fileSystem = AZ::IO::FileIOBase::GetDirectInstance();
-		std::vector<std::string> gameDirs;
-		std::string foundPch;
-		std::string foundPchObj;
-
-		std::function<bool(const char*)> searchFunction;
-		searchFunction = [&fileSystem, &gameDirs, &foundPch, &foundPchObj, &searchFunction](const char* filePath) -> bool
-		{
-			if (fileSystem->IsDirectory(filePath))
-			{
-				std::string dir = filePath;
-				if (ResolveAndCheckPath(dir))
-				{
-					gameDirs.emplace_back(dir);
-					AZ::IO::Result res = fileSystem->FindFiles(filePath, "*", searchFunction);
-				}
-			}
-			else
-			{
-				std::string filePathString = filePath;
-				if (filePathString.find(LUMBERYARD_PCH_NAME) != std::string::npos)
-				{
-					char resolvedPath[AZ_MAX_PATH_LEN] = {0};
-					if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
-					{
-						std::string fileName = resolvedPath;
-						if (fileName.find(".pch") != std::string::npos)
-						{
-							foundPch = std::move(fileName);
-						}
-						else
-						{
-							foundPchObj = std::move(fileName);
-						}
-					}
-				}
-			}
-			return true;
-		};
-		AZ::IO::Result res = fileSystem->FindFiles((BIN_TEMP_DIR + GAME_NAME).c_str(), "*", searchFunction);
 		//
 		// Game directories
 		//
-		GAME_DIRS = std::move(gameDirs);
+		{
+			std::vector<std::string> gameDirs;
+
+			std::function<bool(const char*)> searchGameDirsFunction;
+			searchGameDirsFunction = [&fileSystem, &gameDirs, &searchGameDirsFunction](const char* filePath) -> bool
+			{
+				if (fileSystem->IsDirectory(filePath))
+				{
+					std::string dir = filePath;
+					if (ResolveAndCheckPath(dir))
+					{
+						gameDirs.emplace_back(dir);
+						AZ::IO::Result res = fileSystem->FindFiles(filePath, "*", searchGameDirsFunction);
+					}
+				}
+				return true;
+			};
+			AZ::IO::Result res = fileSystem->FindFiles(GAME_DIR.c_str(), "*", searchGameDirsFunction);
+			GAME_DIRS = std::move(gameDirs);
+		}
 		//
-		// PCH
+		// Platform specific
 		//
-		GAME_PCH_FILENAME = std::move(foundPch);
-		GAME_PCH_OBJ_FILENAME = std::move(foundPchObj);
-		if (!ResolveAndCheckPath(GAME_PCH_FILENAME))
-			return;
-		if (!ResolveAndCheckPath(GAME_PCH_OBJ_FILENAME))
-			return;
+#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
+		//
+		// Find PCH and OBJ of the PCH
+		//
+		{
+			BIN_TEMP_DIR = DEV_DIR + "/BinTemp/" + LUMBERYARD_BIN_CONFIG_DIR;
+			if (!ResolveAndCheckPath(BIN_TEMP_DIR))
+				return;
+			std::string foundPch;
+			std::string foundPchObj;
+
+			std::function<bool(const char*)> searchPchAndPchObjFunction;
+			searchPchAndPchObjFunction = [&fileSystem, &foundPch, &foundPchObj, &searchPchAndPchObjFunction](const char* filePath) -> bool
+			{
+				if (fileSystem->IsDirectory(filePath))
+				{
+					AZ::IO::Result res = fileSystem->FindFiles(filePath, "*", searchPchAndPchObjFunction);
+				}
+				else
+				{
+					std::string filePathString = filePath;
+					if (filePathString.find(LUMBERYARD_PCH_NAME) != std::string::npos)
+					{
+						char resolvedPath[AZ_MAX_PATH_LEN] = { 0 };
+						if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
+						{
+							std::string fileName = resolvedPath;
+							if (fileName.find(".pch") != std::string::npos)
+							{
+								foundPch = std::move(fileName);
+							}
+							else
+							{
+								foundPchObj = std::move(fileName);
+							}
+						}
+					}
+				}
+				return true;
+			};
+			AZ::IO::Result res = fileSystem->FindFiles((BIN_TEMP_DIR + "/" + GAME_NAME).c_str(), "*", searchPchAndPchObjFunction);
+			//
+			// PCH and OBJ of the PCH
+			//
+			GAME_PCH_FILENAME = std::move(foundPch);
+			GAME_PCH_OBJ_FILENAME = std::move(foundPchObj);
+			if (!ResolveAndCheckPath(GAME_PCH_FILENAME))
+				return;
+			if (!ResolveAndCheckPath(GAME_PCH_OBJ_FILENAME))
+				return;
+		}
 		//
 		// TARGET_UID
 		//
