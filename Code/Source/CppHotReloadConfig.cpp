@@ -18,15 +18,32 @@
 
 namespace CppHotReload
 {
-	std::string CPP_HOT_RELOAD_PATH;
+	std::string ROOT_DIR;
+	std::string ENGINE_DIR;
+	std::string DEV_DIR;
+	std::string BOOTSTRAP_FILENAME;
+
 	std::string GAME_NAME;
 	std::string GAME_DIR;
+	std::vector<std::string> GAME_DIRS;
 	std::string GAME_PCH_FILENAME;
 	std::string GAME_PCH_OBJ_FILENAME;
 	std::string BIN_TEMP_DIR;
 	std::string THIRDPARTY_DIR;
+	std::string GEMS_DIR;
 	std::string FORCED_INCLUDE_FILES;
 	std::string TARGET_UID;
+
+	std::string CPP_HOT_RELOAD_DIR;
+	std::string CPP_HOT_RELOAD_INTERMEDIATE_DIR;
+	std::string CPP_HOT_RELOAD_SOURCE_DIR;
+	std::string CPP_HOT_RELOAD_INCLUDE_FILES;
+	std::string CPP_HOT_RELOAD_BINARIES_DIR;
+	std::string CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS;
+	std::string CPP_HOT_RELOAD_COMPILE_OPTIONS;
+	std::string CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS;
+	std::string CPP_HOT_RELOAD_LINK_OPTIONS;
+	std::string CPP_HOT_RELOAD_HOOK_FILENAME;
 
 	uint32_t zlib_crc32(const std::string& string)
 	{
@@ -52,26 +69,106 @@ namespace CppHotReload
 		return std::to_string(py_build_system_crc32);
 	}
 
+	const std::string& GetRootDir()							{ return ROOT_DIR; }
+	const std::string& GetEngineDir()						{ return ENGINE_DIR; }
+	const std::string& GetDevDir()							{ return DEV_DIR; }
+	const std::string& GetBootstrapFileName()				{ return BOOTSTRAP_FILENAME; }
+
+	const std::string& GetGameName()						{ return GAME_NAME; }
+	const std::string& GetGameDir()							{ return GAME_DIR; }
+	const std::vector<std::string>& GetGameDirs()			{ return GAME_DIRS; }
+	const std::string& GetGamePchFileName()					{ return GAME_PCH_FILENAME; }
+	const std::string& GetGamePchObjFileName()				{ return GAME_PCH_OBJ_FILENAME; }
+	const std::string& GetBinTempDir()						{ return BIN_TEMP_DIR; }
+	const std::string& GetThirdPartyDir()					{ return THIRDPARTY_DIR; }
+	const std::string& GetGemsDir()							{ return GEMS_DIR; }
+	const std::string& GetForcedIncludeFiles()				{ return FORCED_INCLUDE_FILES; }
+	const std::string& GetTargetUid()						{ return TARGET_UID; }
+
+	const std::string& GetCppHotReloadDir()					{ return CPP_HOT_RELOAD_DIR; }
+	const std::string& GetCppHotReloadIntermediateDir()		{ return CPP_HOT_RELOAD_INTERMEDIATE_DIR; }
+	const std::string& GetCppHotReloadSourceDir()			{ return CPP_HOT_RELOAD_SOURCE_DIR; }
+	const std::string& GetCppHotReloadIncludeFiles()		{ return CPP_HOT_RELOAD_INCLUDE_FILES; }
+	const std::string& GetCppHotReloadBinariesDir()			{ return CPP_HOT_RELOAD_BINARIES_DIR; }
+	const std::string& GetCppHotReloadCustomConstructors()  { return CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS; }
+	const std::string& GetCppHotReloadCompileOptions()		{ return CPP_HOT_RELOAD_COMPILE_OPTIONS; }
+	const std::string& GetCppHotReloadPreprocessorOptions() { return CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS; }
+	const std::string& GetCppHotReloadLinkOptions()			{ return CPP_HOT_RELOAD_LINK_OPTIONS; }	 
+	const std::string& GetCppHotReloadHookFileName()		{ return CPP_HOT_RELOAD_HOOK_FILENAME; }	 
+
+	bool ResolveAndCheckPath(std::string& path)
+	{
+		AZ::IO::FileIOBase* fileIO = AZ::IO::FileIOBase::GetInstance();
+		
+		char resolvedPath[AZ_MAX_PATH_LEN] = {0};
+		if (!fileIO->ResolvePath(path.c_str(), resolvedPath, AZ_MAX_PATH_LEN))
+		{
+			AZ_Error("C++ Hot Reload", false, "Invalid folder: %s\n", resolvedPath);
+			return false;
+		}
+
+		if (fileIO->Exists(resolvedPath))
+		{
+			path = resolvedPath;
+		}
+		else
+		{
+			AZ_Error("C++ Hot Reload", false, "Folder doesn't exists: %s\n", resolvedPath);
+			return false;
+		}
+		return true;
+	}
+
 	void LocateProjectPaths()
 	{
 		AZ::IO::FileIOBase* fileIO = AZ::IO::FileIOBase::GetInstance();
-		const std::string& rootPath = fileIO->GetAlias("@root@");
-		const std::string& engrootPath = fileIO->GetAlias("@engroot@");
-		const std::string& devrootPath = fileIO->GetAlias("@devroot@");
-		const std::string& bootstrapFilename = devrootPath + "/bootstrap.cfg";
+		ROOT_DIR			= fileIO->GetAlias("@root@");
+		ENGINE_DIR			= fileIO->GetAlias("@engroot@");
+		DEV_DIR				= fileIO->GetAlias("@devroot@");
+		BOOTSTRAP_FILENAME	= DEV_DIR + "/bootstrap.cfg";
 		//
 		// 3rdParty directory
 		//
-		THIRDPARTY_DIR = rootPath + "/../3rdParty";
+		THIRDPARTY_DIR = DEV_DIR + "/../3rdParty";
+		if (!ResolveAndCheckPath(THIRDPARTY_DIR))
+			return;
+		//
+		// Gems directory
+		//
+		GEMS_DIR = DEV_DIR + "/Gems";
+		if (!ResolveAndCheckPath(GEMS_DIR))
+			return;
+		//
+		// C++ Hot Reload 
+		//
+		CPP_HOT_RELOAD_DIR					= GEMS_DIR + "/CppHotReload";
+		CPP_HOT_RELOAD_SOURCE_DIR			= CPP_HOT_RELOAD_DIR + "/Code/Source";
+		CPP_HOT_RELOAD_BINARIES_DIR			= CPP_HOT_RELOAD_DIR + "/External/" + CPP_HOT_RELOAD_VERSION;
+		CPP_HOT_RELOAD_INTERMEDIATE_DIR		= CPP_HOT_RELOAD_BINARIES_DIR + "/Intermediate";
+		CPP_HOT_RELOAD_INCLUDE_FILES		= CPP_HOT_RELOAD_SOURCE_DIR + "/IncludeDirectories.txt";
+		CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS	= CPP_HOT_RELOAD_SOURCE_DIR + "/CppHotReloadCustomContructors.h";
+		CPP_HOT_RELOAD_HOOK_FILENAME		= CPP_HOT_RELOAD_SOURCE_DIR + "/CppHotReloadLyHook.h";
+
+		if (!fileIO->Exists(CPP_HOT_RELOAD_DIR.c_str()) 
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_INTERMEDIATE_DIR.c_str()) 
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_SOURCE_DIR.c_str()) 
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_INCLUDE_FILES.c_str()) 
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_BINARIES_DIR.c_str()) 
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS.c_str())
+		&&  !fileIO->Exists(CPP_HOT_RELOAD_HOOK_FILENAME.c_str()))
+		{
+			AZ_Error("C++ Hot Reload", false, "C++ Hot Reload files not found:\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", CPP_HOT_RELOAD_DIR, CPP_HOT_RELOAD_INTERMEDIATE_DIR, CPP_HOT_RELOAD_SOURCE_DIR, CPP_HOT_RELOAD_INCLUDE_FILES, CPP_HOT_RELOAD_BINARIES_DIR, CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS, CPP_HOT_RELOAD_HOOK_FILENAME);
+			return;
+		}
 		//
 		// Get the default project name from boostrap.cfg
 		//
-		if (fileIO->Exists(bootstrapFilename.c_str()))
+		if (fileIO->Exists(BOOTSTRAP_FILENAME.c_str()))
 		{
 			AZ::IO::HandleType file = AZ::IO::InvalidHandle;
-			if (fileIO->Open(bootstrapFilename.c_str(), AZ::IO::OpenMode::ModeRead | AZ::IO::OpenMode::ModeText, file) != AZ::IO::ResultCode::Success)
+			if (fileIO->Open(BOOTSTRAP_FILENAME.c_str(), AZ::IO::OpenMode::ModeRead | AZ::IO::OpenMode::ModeText, file) != AZ::IO::ResultCode::Success)
 			{
-				AZ_Error("C++ Hot Reload", false, "Impossible to find bootstrap.cfg file in: %s\n", bootstrapFilename.c_str());
+				AZ_Error("C++ Hot Reload", false, "Impossible to find bootstrap.cfg file in: %s\n", BOOTSTRAP_FILENAME.c_str());
 				return;
 			}
 
@@ -81,7 +178,7 @@ namespace CppHotReload
 			if (actualSize == 0)
 			{
 				fileIO->Close(file);
-				AZ_Error("C++ Hot Reload", false, "bootstrap.cfg is empty [%s]\n", bootstrapFilename.c_str());
+				AZ_Error("C++ Hot Reload", false, "bootstrap.cfg is empty [%s]\n", BOOTSTRAP_FILENAME.c_str());
 				return;
 			}
 
@@ -91,7 +188,7 @@ namespace CppHotReload
 			// Reading the entire bootstrap fileBinT
 			if (fileIO->Read(file, fileContents.data(), actualSize) != AZ::IO::ResultCode::Success)
 			{
-				AZ_Error("C++ Hot Reload", false, "Something went wrong reading bootstrap.cfg [%s]\n", bootstrapFilename.c_str());
+				AZ_Error("C++ Hot Reload", false, "Something went wrong reading bootstrap.cfg [%s]\n", BOOTSTRAP_FILENAME.c_str());
 				return;
 			}
 			fileContents[actualSize] = 0;
@@ -108,31 +205,39 @@ namespace CppHotReload
 			}
 			else
 			{
-				AZ_Error("C++ Hot Reload", false, "Couldn't find sys_game_folder in bootstrap.cfg [%s]\n", bootstrapFilename.c_str());
+				AZ_Error("C++ Hot Reload", false, "Couldn't find sys_game_folder in bootstrap.cfg [%s]\n", BOOTSTRAP_FILENAME.c_str());
 				return;
 			}
 		}
 		//
 		// Game path
 		//
-		GAME_DIR = devrootPath + "/" + GAME_NAME;
-
+		GAME_DIR = DEV_DIR + "/" + GAME_NAME;
+		if (!ResolveAndCheckPath(GAME_DIR))
+			return;
 #if CPP_HOT_RELOAD_PLATFORM_WINDOWS
 		//
 		// FInd PCH and OBJ of the PCH
 		//
-		BIN_TEMP_DIR = devrootPath + "/BinTemp/" + LUMBERYARD_BIN_CONFIG_DIR + GAME_NAME;
-
+		BIN_TEMP_DIR = DEV_DIR + "/BinTemp/" + LUMBERYARD_BIN_CONFIG_DIR;
+		if (!ResolveAndCheckPath(BIN_TEMP_DIR))
+			return;
 		AZ::IO::FileIOBase* fileSystem = AZ::IO::FileIOBase::GetDirectInstance();
+		std::vector<std::string> gameDirs;
 		std::string foundPch;
 		std::string foundPchObj;
 
 		std::function<bool(const char*)> searchFunction;
-		searchFunction = [&fileSystem, &foundPch, &foundPchObj, &searchFunction](const char* filePath) -> bool
+		searchFunction = [&fileSystem, &gameDirs, &foundPch, &foundPchObj, &searchFunction](const char* filePath) -> bool
 		{
 			if (fileSystem->IsDirectory(filePath))
 			{
-				AZ::IO::Result res = fileSystem->FindFiles(filePath, "*", searchFunction);
+				std::string dir = filePath;
+				if (ResolveAndCheckPath(dir))
+				{
+					gameDirs.emplace_back(dir);
+					AZ::IO::Result res = fileSystem->FindFiles(filePath, "*", searchFunction);
+				}
 			}
 			else
 			{
@@ -156,17 +261,45 @@ namespace CppHotReload
 			}
 			return true;
 		};
-		AZ::IO::Result res = fileSystem->FindFiles(BIN_TEMP_DIR.c_str(), "*", searchFunction);
+		AZ::IO::Result res = fileSystem->FindFiles((BIN_TEMP_DIR + GAME_NAME).c_str(), "*", searchFunction);
 		//
-		// TARGET_UID
+		// Game directories
 		//
-		TARGET_UID = py_build_system_crc32(GAME_NAME);
-		AZ_Printf("C++ Hot Reload", "sys_game_folder=%s, crc: %s\n", GAME_NAME, TARGET_UID.c_str());
+		GAME_DIRS = std::move(gameDirs);
 		//
 		// PCH
 		//
 		GAME_PCH_FILENAME = std::move(foundPch);
 		GAME_PCH_OBJ_FILENAME = std::move(foundPchObj);
+		if (!ResolveAndCheckPath(GAME_PCH_FILENAME))
+			return;
+		if (!ResolveAndCheckPath(GAME_PCH_OBJ_FILENAME))
+			return;
+		//
+		// TARGET_UID
+		//
+		TARGET_UID = py_build_system_crc32(GAME_NAME);
+		if (GAME_PCH_FILENAME.find(TARGET_UID) != std::string::npos)
+		{
+			AZ_Printf("C++ Hot Reload", "sys_game_folder=%s, crc: %s\n", GAME_NAME.c_str(), TARGET_UID.c_str());
+		}
+		else
+		{
+			AZ_Error("C++ Hot Reload", false, "CRC32 of project doesn't match [%s]\n", TARGET_UID.c_str());
+		}
+
+		const std::string& PCH_OPTIONS = "/FI\"" + GAME_PCH_FILENAME + "\" /Yu\"" + GAME_PCH_INCLUDE_NAME + "\" /Fp\"" + GAME_PCH_FILENAME + "\" /FI\"" + CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS + "\" ";
+		//
+		// Force to include custom constructor and the pch
+		//
+#if CPP_HOT_RELOAD_IS_DEBUG
+		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS + R"(/MDd /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /wd4005 /wd4240 /FS /std:c++17 /Zc:__cplusplus /Od /Ob0 /Oy- /RTC1 )";
+		CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS  = R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=21 /DEXE_VERSION_INFO_2=2 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )";
+#else
+		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS = R"(/MD /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /FS /std:c++17 /Zc:__cplusplus /Ox /Ob2 /Ot /Oi /Oy- )";
+		CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS  = R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=21 /DEXE_VERSION_INFO_2=2 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_MT /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )";
+#endif
+		CPP_HOT_RELOAD_LINK_OPTIONS = "\"" + GAME_PCH_OBJ_FILENAME + "\" /NOLOGO /MANIFEST /LARGEADDRESSAWARE /INCREMENTAL:NO /MACHINE:X64 /OPT:REF /OPT:ICF /DEBUG ";
 #endif
 	}
 }

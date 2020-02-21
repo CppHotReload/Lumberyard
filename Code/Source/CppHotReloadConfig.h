@@ -3,46 +3,22 @@
 //
 
 #pragma once
+#define CPP_HOT_RELOAD_VERSION "0.9.98"
+//
+// Platform
+//
 #ifdef _MSC_VER
 #	define CPP_HOT_RELOAD_PLATFORM_WINDOWS 1
 #	define CPP_HOT_RELOAD_PLATFORM_MAC 0
+#   if (_MSC_VER >= 1920)	// VS 2019
+#		define CPP_HOT_RELOAD_VS_VAR_ALL "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\""
+#   elif (_MSC_VER > 1910)	// VS 2017
+#		define CPP_HOT_RELOAD_VS_VAR_ALL "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\""
+#	endif
 #else
 #	define CPP_HOT_RELOAD_PLATFORM_WINDOWS 0
 #	define CPP_HOT_RELOAD_PLATFORM_MAC 1
 #endif
-#define CPP_HOT_RELOAD_VERSION		"0.9.98"
-#define LUMBERYARD_ROOT				"E:/Amazon/Lumberyard_1.22/"
-#define LUMBERYARD_GAME_NAME		"SamplesProject"				// pointing the Gem dir for the prototype
-#define LUMBERYARD_DEV_DIR			LUMBERYARD_ROOT "dev/"
-#define LUMBERYARD_THIRDPARTY_DIR	LUMBERYARD_ROOT	"3rdParty/"
-#define LUMBERYARD_GEMS_DIR			LUMBERYARD_DEV_DIR  "Gems/"
-
-#define LUMBERYARD_CPP_HOT_RELOAD_PATH				LUMBERYARD_GEMS_DIR "CppHotReload/Code/Source/"
-#define LUMBERYARD_CPP_HOT_RELOAD_INCLUDE_FILES		LUMBERYARD_CPP_HOT_RELOAD_PATH "IncludeDirectories.txt"
-#define LUMBERYARD_CPP_HOT_RELOAD_BINARIES_PATH		LUMBERYARD_GEMS_DIR "CppHotReload/External/" CPP_HOT_RELOAD_VERSION "/"
-//
-// Configured only with the Test folder for the prototype
-//
-#define LUMBERYARD_CPP_HOT_RELOAD_DIR LUMBERYARD_GEMS_DIR "CppHotReload/"
-#define LUMBERYARD_GAME_DIR LUMBERYARD_DEV_DIR LUMBERYARD_GAME_NAME "/Gem/Code/Source/Game/"
-//
-// Build configuration
-//
-#ifdef _DEBUG
-#	define CPP_HOT_RELOAD_CONFIGURATION "Debug"
-#	define CPP_HOT_RELOAD_IS_DEBUG 1
-#	define LUMBERYARD_BIN_CONFIG_DIR	"win_x64_vs2017_debug/"
-#else
-#	define CPP_HOT_RELOAD_CONFIGURATION "Release"
-#	define CPP_HOT_RELOAD_IS_DEBUG 0
-#	define LUMBERYARD_BIN_CONFIG_DIR	"win_x64_vs2017_profile/"
-#endif
-//
-// Locate pch 
-//
-#define LUMBERYARD_BIN_TEMP_DIR  LUMBERYARD_DEV_DIR "BinTemp/" LUMBERYARD_BIN_CONFIG_DIR		// Where is the PCH file
-#define LUMBERYARD_GAME_PCH_PATH LUMBERYARD_BIN_TEMP_DIR LUMBERYARD_GAME_NAME "/Gem/Code/"
-
 #if CPP_HOT_RELOAD_PLATFORM_WINDOWS
 #	define CPP_HOT_RELOAD_PLATFORM_NAME "Windows"
 #	if _WIN64
@@ -54,6 +30,18 @@
 #		define CPP_HOT_RELOAD_ARCH_NAME "x86_64"
 #endif
 //
+// Build configuration
+//
+#ifdef _DEBUG
+#	define CPP_HOT_RELOAD_CONFIGURATION "Debug"
+#	define CPP_HOT_RELOAD_IS_DEBUG 1
+#	define LUMBERYARD_BIN_CONFIG_DIR	"win_x64_vs2017_debug"
+#else
+#	define CPP_HOT_RELOAD_CONFIGURATION "Release"
+#	define CPP_HOT_RELOAD_IS_DEBUG 0
+#	define LUMBERYARD_BIN_CONFIG_DIR	"win_x64_vs2017_profile"
+#endif
+//
 // Windows Platform
 //
 #if CPP_HOT_RELOAD_PLATFORM_WINDOWS
@@ -61,31 +49,37 @@
 // PCH, pch object filename location...
 //
 #	define LUMBERYARD_PCH_NAME "StdAfx"
-#	define CPP_HOT_RELOAD_PCH_INCLUDE_NAME LUMBERYARD_PCH_NAME ".h"
-#	define CPP_HOT_RELOAD_TARGET_UID "2581533"										// <-- no clue how to get this number
-
-#	define CPP_HOT_RELOAD_PCH_FILENAME LUMBERYARD_GAME_PCH_PATH LUMBERYARD_PCH_NAME "." CPP_HOT_RELOAD_TARGET_UID ".pch"
-#	define CPP_HOT_RELOAD_PCH_OBJ_FILENAME LUMBERYARD_GAME_PCH_PATH LUMBERYARD_PCH_NAME "." CPP_HOT_RELOAD_TARGET_UID ".obj"
-//
-// Force to include custom constructor and the pch
-//
-#	define CPP_HOT_RELOAD_PCH_OPTIONS "/FI\"" CPP_HOT_RELOAD_PCH_INCLUDE_NAME "\" /Yu\"" CPP_HOT_RELOAD_PCH_INCLUDE_NAME "\" /Fp\"" CPP_HOT_RELOAD_PCH_FILENAME "\" /FI\"" LUMBERYARD_CPP_HOT_RELOAD_PATH "CppHotReloadCustomContructors.h\" "
-#	if CPP_HOT_RELOAD_IS_DEBUG
-#		define CPP_HOT_RELOAD_FORCE_COMPILE_OPTIONS CPP_HOT_RELOAD_PCH_OPTIONS R"(/MDd /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /wd4005 /wd4240 /FS /std:c++17 /Zc:__cplusplus /Od /Ob0 /Oy- /RTC1 )"
-#		define CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=21 /DEXE_VERSION_INFO_2=2 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )"
-#	else
-#		define CPP_HOT_RELOAD_FORCE_COMPILE_OPTIONS CPP_HOT_RELOAD_PCH_OPTIONS R"(/MD /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /FS /std:c++17 /Zc:__cplusplus /Ox /Ob2 /Ot /Oi /Oy- )"
-#		define CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=21 /DEXE_VERSION_INFO_2=2 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_MT /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )"
-#	endif
-#	define CPP_HOT_RELOAD_FORCE_LINK_OPTIONS "\"" CPP_HOT_RELOAD_PCH_OBJ_FILENAME "\" /NOLOGO /MANIFEST /LARGEADDRESSAWARE /INCREMENTAL:NO /MACHINE:X64 /OPT:REF /OPT:ICF /DEBUG "
-#   if (_MSC_VER >= 1920)	// VS 2019
-#		define CPP_HOT_RELOAD_VS_VAR_ALL "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\""
-#   elif (_MSC_VER > 1910)	// VS 2017
-#		define CPP_HOT_RELOAD_VS_VAR_ALL "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat\""
-#	endif
+#	define GAME_PCH_INCLUDE_NAME LUMBERYARD_PCH_NAME ".h"
 #endif
 
 namespace CppHotReload
 {
 	void LocateProjectPaths();
+
+	const std::string& GetRootDir();
+	const std::string& GetEngineDir();
+	const std::string& GetDevDir();
+	const std::string& GetBootstrapFileName();
+
+	const std::string& GetGameName();
+	const std::string& GetGameDir();	
+	const std::vector<std::string>& GetGameDirs();			
+	const std::string& GetGamePchFileName();
+	const std::string& GetGamePchObjFileName(); 
+	const std::string& GetBinTempDir();			
+	const std::string& GetThirdPartyDir();		
+	const std::string& GetGemsDir();			
+	const std::string& GetForcedIncludeFiles(); 
+	const std::string& GetTargetUid();			
+
+	const std::string& GetCppHotReloadDir();		
+	const std::string& GetCppHotReloadIntermediateDir();
+	const std::string& GetCppHotReloadSourceDir();			 
+	const std::string& GetCppHotReloadIncludeFiles();		 
+	const std::string& GetCppHotReloadBinariesDir();		 
+	const std::string& GetCppHotReloadCustomConstructors();  
+	const std::string& GetCppHotReloadCompileOptions();		 
+	const std::string& GetCppHotReloadPreprocessorOptions(); 
+	const std::string& GetCppHotReloadLinkOptions();		 
+	const std::string& GetCppHotReloadHookFileName();		 
 }

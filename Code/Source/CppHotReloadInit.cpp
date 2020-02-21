@@ -38,14 +38,6 @@ namespace CppHotReload
         // C++ Hot Reload license key - Community
         //
         const std::string& licenseGuid = "1a2a4b66-b878-43a3-8308-39b24bd41106";
-		const std::string& CppHotReloadTempDir = LUMBERYARD_CPP_HOT_RELOAD_BINARIES_PATH "../Intermediate";
-        //
-        // Scripts files
-        //
-        const char* filesDirectories[] =
-        {
-			LUMBERYARD_GAME_DIR
-        };
         //
         // Prepare pre-processor macros
         //
@@ -54,24 +46,24 @@ namespace CppHotReload
 		// Libraries directory
 		//
 		std::vector<std::string> lyLibPaths;
-		lyLibPaths.emplace_back("Code/Framework/AzCore/AzCore");
-		lyLibPaths.emplace_back("Code/Framework/AzFramework/AzFramework");
-		lyLibPaths.emplace_back("Code/Framework/AzGameFramework/AzGameFramework");
-		lyLibPaths.emplace_back("Code/Framework/GridMate");
-		lyLibPaths.emplace_back("Gems/CryLegacy/Code");
+		lyLibPaths.emplace_back("/Code/Framework/AzCore/AzCore");
+		lyLibPaths.emplace_back("/Code/Framework/AzFramework/AzFramework");
+		lyLibPaths.emplace_back("/Code/Framework/AzGameFramework/AzGameFramework");
+		lyLibPaths.emplace_back("/Code/Framework/GridMate");
+		lyLibPaths.emplace_back("/Gems/CryLegacy/Code");
 
 		std::string additionalLibPaths;
 		for (const std::string& libPath : lyLibPaths)
 		{
-			additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_BIN_TEMP_DIR + libPath + "\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetBinTempDir() + libPath + "\" ";
 		}
 		//
 		// 3rd party
 		//
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
-		additionalLibPaths += "/LIBPATH:\"" LUMBERYARD_THIRDPARTY_DIR "zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
+		additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
 		//
 		// Libraries
 		// TODO: link with the hot reload lib need to be gone in the future
@@ -85,8 +77,8 @@ namespace CppHotReload
 			{ Compiler::Prameter::CPP_LANGUAGE			, "objective-c++" },
 			{ Compiler::Prameter::CPP_LANGUAGE_DIALECT	, "c++14" },
 			{ Compiler::Prameter::ARCHITECTURE			, CPP_HOT_RELOAD_ARCH_NAME },
-			{ Compiler::Prameter::SET_MACROS			, CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS },
-			{ Compiler::Prameter::SET_OPTIONS			, CPP_HOT_RELOAD_FORCE_COMPILE_OPTIONS },
+			{ Compiler::Prameter::SET_MACROS			, GetCppHotReloadPreprocessorOptions().c_str() },
+			{ Compiler::Prameter::SET_OPTIONS			, GetCppHotReloadCompileOptions().c_str() },
 #if CPP_HOT_RELOAD_IS_DEBUG
 			{ Compiler::Prameter::IS_DEBUG, "YES" },
 #endif
@@ -97,7 +89,7 @@ namespace CppHotReload
 
 		Linker::Option LinkerOptions[] =
         {
-			{ Linker::Prameter::SET_OPTIONS			, CPP_HOT_RELOAD_FORCE_LINK_OPTIONS },
+			{ Linker::Prameter::SET_OPTIONS			, GetCppHotReloadLinkOptions().c_str() },
 			{ Linker::Prameter::ADDITIONAL_LIB_PATHS, additionalLibPaths.c_str() },
 			{ Linker::Prameter::ADDITIONAL_LIBRARIES, additionalLibs.c_str() },
 #if CPP_HOT_RELOAD_IS_DEBUG
@@ -114,16 +106,16 @@ namespace CppHotReload
 		{
 			{ Configuration::Prameter::NEW_OBJECT	  , "AUTO" },
 			{ Configuration::Prameter::PARSE_ON_DEMAND, "YES" },
-			{ Configuration::Prameter::HOOK_FILE      , LUMBERYARD_CPP_HOT_RELOAD_PATH "CppHotReloadLyHook.h" },
+			{ Configuration::Prameter::HOOK_FILE      , GetCppHotReloadHookFileName().c_str() },
 		};
 		//
 		// C++ Hot Reload environment variables to replace after read the files, like include directories txt
 		//
 		Configuration::EnvironmentVariable EnvironmentVariables[] =
 		{
-			{ "DevDir"		 , LUMBERYARD_DEV_DIR		 },
-			{ "ThirdPartyDir", LUMBERYARD_THIRDPARTY_DIR },
-			{ "BinTemp"		 , LUMBERYARD_BIN_TEMP_DIR	 },
+			{ "DevDir"		 , GetDevDir().c_str()		  },
+			{ "ThirdPartyDir", GetThirdPartyDir().c_str() },
+			{ "BinTemp"		 , GetBinTempDir().c_str()    },
 		};
 		Configuration::CallBacks CallBacks[] =
 		{
@@ -134,16 +126,22 @@ namespace CppHotReload
         //
         // HotReload initialization
         //
-		const std::string& IncludeDirectoriesFile = LUMBERYARD_CPP_HOT_RELOAD_INCLUDE_FILES;
-		
-		CppHotReload::CreateWithConfigurationFiles( filesDirectories, static_cast<unsigned short>(countOf(filesDirectories))
-												  , IncludeDirectoriesFile.c_str()
+		//
+		// C-Style games dir
+		//
+		const std::vector<std::string>& gameDirs = GetGameDirs();
+		std::vector<const char*> filesDirectories;
+		filesDirectories.reserve(gameDirs.size());
+		std::transform(std::begin(gameDirs), std::end(gameDirs), std::back_inserter(filesDirectories), std::mem_fn(&std::string::c_str));
+
+		CppHotReload::CreateWithConfigurationFiles( filesDirectories.data(), static_cast<unsigned short>(filesDirectories.size())
+												  , GetCppHotReloadIncludeFiles().c_str()
 												  , EnvironmentVariables, static_cast<unsigned short>(countOf(EnvironmentVariables))
 												  , CallBacks			, static_cast<unsigned short>(countOf(CallBacks))
 												  , ConfigurationOptions, static_cast<unsigned short>(countOf(ConfigurationOptions))
 												  , CompilerOptions     , static_cast<unsigned short>(countOf(CompilerOptions))
 												  , LinkerOptions       , static_cast<unsigned short>(countOf(LinkerOptions))
-												  , CppHotReloadTempDir.c_str(), licenseGuid.c_str());
+												  , GetCppHotReloadIntermediateDir().c_str(), licenseGuid.c_str());
     }
 	//
 	// Ly Memory Redirection ???
