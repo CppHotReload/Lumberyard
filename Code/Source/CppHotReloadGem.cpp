@@ -175,23 +175,14 @@ namespace CppHotReload
         //
         void OnEntityInitialized(const AZ::EntityId& entityId) override
         {
-            const AZStd::string& msg = entityId.ToString() + " OnEntityInitialized";
             LogSystem(msg.c_str());
             RegisterEntityComponents(entityId);
         }
         void OnEntityDestroyed(const AZ::EntityId& entityId) override
         {
-            const AZStd::string& msg = entityId.ToString() + " OnEntityDestroyed";
             LogSystem(msg.c_str());
             UnregisterEntityComponents(entityId);
         }
-        void OnEntityActivated(const AZ::EntityId& entityId) override
-        {
-        }
-        void OnEntityDeactivated(const AZ::EntityId& entityId) override
-        {
-        }
-        //void OnEntityNameChanged(const AZ::EntityId& entityId, const AZStd::string& name) override;
 
         AZ::Entity* GetEntityById(const AZ::EntityId& entityId)
         {
