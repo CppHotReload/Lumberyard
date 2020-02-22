@@ -24,12 +24,12 @@ m_movement.x = -100;
 7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
 You'll see that the ball is moving to the other direction!
 
-## How to add libraries
+### How to configure libraries
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `lyLibPaths`
 2. You'll see that is configured with the basic libraries
 3. Follow the pattern adding your libraries and library paths
 
-## How to add include paths
+### How to configure include paths
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `EnvironmentVariables`
 2. You'll see that is configured with the basic paths
 ```
