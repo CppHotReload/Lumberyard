@@ -6,7 +6,7 @@
 #include "StdAfx.h"
 #include "CppHotReloadTestComponentDependency.h"
 
-float CppHotReloadTestComponentDependency::variableToDepend = -150.f;
+float CppHotReloadTestComponentDependency::variableToDepend = -150.f; 
 
 void CppHotReloadTestComponentDependency::Init()                 
 {          

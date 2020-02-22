@@ -6,8 +6,6 @@
 #include "StdAfx.h"
 #include "CppHotReloadTestComponent.h"
 
-
-
 void CppHotReloadTestComponent::Init()                 
 {           
 	m_moveSpeed = 0.1f;
@@ -51,8 +49,11 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 		//
 		// C++ Hot Reload
 		// 
-		m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;  
-
+#if CPP_HOT_RELOAD_DEPENDENCY_TEST
+		m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
+#else
+		m_movement.x = -100.0f;
+#endif
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;
 		const AZ::Vector3 right		  = localTransform.GetColumn(0);

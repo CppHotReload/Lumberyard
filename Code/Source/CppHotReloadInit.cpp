@@ -106,10 +106,14 @@ namespace CppHotReload
 		{
 			{ Configuration::Prameter::NEW_OBJECT, "AUTO" },
 			{ Configuration::Prameter::PARSE_ON_DEMAND, "YES" },
-			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "YES" },			// if you might not use always EBuses and you have hard include dependencies
-			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_FAST, "YES" },		// dependencies are found if are .h or .cpp only
-			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0, "NO" },	// search always dependencies
 			{ Configuration::Prameter::HOOK_FILE, GetCppHotReloadHookFileName().c_str() },
+#if CPP_HOT_RELOAD_DEPENDENCY_TEST
+			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "YES" },			// I don't use always EBuses :(
+			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_FAST, "YES" },		// dependencies are found if are .h or .cpp only
+			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0, "NO" },	// NO, search always dependencies
+#else
+			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "NO" },			// I always use EBuses!
+#endif
 		};
 		//
 		// C++ Hot Reload environment variables to replace after read the files, like include directories txt

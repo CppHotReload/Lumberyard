@@ -11,7 +11,10 @@
 #include <AzCore/Component/TickBus.h>
 #include <AzCore/Math/Transform.h>
 #include <AzFramework/Entity/GameEntityContextBus.h>
+
+#if CPP_HOT_RELOAD_DEPENDENCY_TEST
 #include "CppHotReloadTestComponentDependency.h"
+#endif
 
 class CppHotReloadTestComponent :       
 	public AZ::Component,
