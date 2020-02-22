@@ -62,6 +62,23 @@ extern "C"
 				//
 				PARSE_ON_DEMAND,	
 				//
+				// YES, parsing on demand doesn't build the entire dependency graph, 
+				// this will update dependencies and dependants when reload.
+				// Default: YES
+				//
+				SEARCH_DEPENDENCIES_ON_DEMAND,	
+				//
+				// YES, if your C++ files are .h and .cpp activate this to speed up the search.
+				// If not the dependencies search will check for .hpp, .c, .cxx additionally
+				// Default: YES
+				//
+				SEARCH_DEPENDENCIES_ON_DEMAND_FAST,	
+				//
+				// YES, limit the search of dependencies only when it's the first time we reload a file.
+				// Default: NO
+				//
+				SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0,	
+				//
 				// This file will be included once before the source code generated, allow you to create your own hooks for your engine
 				//
 				HOOK_FILE,		

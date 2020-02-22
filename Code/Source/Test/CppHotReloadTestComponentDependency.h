@@ -11,15 +11,18 @@
 #include <AzCore/Component/TickBus.h>
 #include <AzCore/Math/Transform.h>
 #include <AzFramework/Entity/GameEntityContextBus.h>
-#include "CppHotReloadTestComponentDependency.h"
 
-class CppHotReloadTestComponent :       
+class CppHotReloadTestComponentDependency :       
 	public AZ::Component,
 	public AZ::TickBus::Handler,
 	public AZ::TransformNotificationBus::Handler
 {
 public:
-      AZ_COMPONENT(CppHotReloadTestComponent, "{0C09F774-DECA-40C4-8B54-3A93033EC381}", AZ::Component);
+      AZ_COMPONENT(CppHotReloadTestComponentDependency, "{1F43A13C-AA8B-424F-B80F-6D253BBF4D2A}", AZ::Component);
+	  //
+	  // Dependency test
+	  //
+	  static float variableToDepend;
 
 	  void Init() override;
 	  void Activate() override;

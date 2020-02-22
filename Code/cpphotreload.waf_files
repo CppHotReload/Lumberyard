@@ -25,7 +25,9 @@
         ],
         "Test": [
             "Source/Test/CppHotReloadTestComponent.h",
-            "Source/Test/CppHotReloadTestComponent.cpp"
+            "Source/Test/CppHotReloadTestComponent.cpp",
+            "Source/Test/CppHotReloadTestComponentDependency.h",
+            "Source/Test/CppHotReloadTestComponentDependency.cpp"
         ]
     }
 }

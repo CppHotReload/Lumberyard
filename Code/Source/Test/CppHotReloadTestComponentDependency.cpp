@@ -4,17 +4,17 @@
 
 #pragma once
 #include "StdAfx.h"
-#include "CppHotReloadTestComponent.h"
+#include "CppHotReloadTestComponentDependency.h"
 
+float CppHotReloadTestComponentDependency::variableToDepend = -150.f;
 
-
-void CppHotReloadTestComponent::Init()                 
-{           
+void CppHotReloadTestComponentDependency::Init()                 
+{          
 	m_moveSpeed = 0.1f;
 	m_movement = ZERO;      
 }     
   
-void CppHotReloadTestComponent::Activate()              
+void CppHotReloadTestComponentDependency::Activate()              
 {  
 	AZ::TickBus::Handler::BusConnect();   
 	AZ::TransformNotificationBus::Handler::BusConnect(GetEntityId()); 
@@ -26,13 +26,13 @@ void CppHotReloadTestComponent::Activate()
 	m_initialPosition = localTransform.GetPosition();     
 } 
  
-void CppHotReloadTestComponent::Deactivate()  
+void CppHotReloadTestComponentDependency::Deactivate()  
 { 
 	AZ::TickBus::Handler::BusDisconnect(); 
 	AZ::TransformNotificationBus::Handler::BusDisconnect();
 } 
    
-void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time) 
+void CppHotReloadTestComponentDependency::OnTick(float deltaTime, AZ::ScriptTimePoint time) 
 {
 	AZ::Transform localTransform = AZ::Transform::Identity();
 	EBUS_EVENT_ID_RESULT(localTransform, GetEntityId(), AZ::TransformBus, GetLocalTM);
@@ -51,7 +51,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 		//
 		// C++ Hot Reload
 		// 
-		m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;  
+		m_movement.x = -100.0f; 
 
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;
@@ -65,25 +65,25 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 	}
 }   
 
-void CppHotReloadTestComponent::Reflect(AZ::ReflectContext* context)
+void CppHotReloadTestComponentDependency::Reflect(AZ::ReflectContext* context)
 {
 	AZ::SerializeContext* serializeContext = azrtti_cast<AZ::SerializeContext*>(context);
 	if (serializeContext) 
 	{
-		serializeContext->Class<CppHotReloadTestComponent, AZ::Component>()
+		serializeContext->Class<CppHotReloadTestComponentDependency, AZ::Component>()
 			->Version(5)
-			->Field("Movement Speed", &CppHotReloadTestComponent::m_moveSpeed)
+			->Field("Movement Speed", &CppHotReloadTestComponentDependency::m_moveSpeed)
 			;
 
 		AZ::EditContext* editContext = serializeContext->GetEditContext();
 		if (editContext)
 		{
-			editContext->Class<CppHotReloadTestComponent>("C++ Hot Reload - Test", "The World's Most Clever Component")
+			editContext->Class<CppHotReloadTestComponentDependency>("C++ Hot Reload - Test Dependency", "The World's Most Clever Component Dependency")
 				->ClassElement(AZ::Edit::ClassElements::EditorData, "")
 				->Attribute("Category", "Test")
 				->Attribute("AutoExpand", true)
 				->Attribute("AppearsInAddComponentMenu", AZ_CRC("Game", 0x232b318c))
-				->DataElement(1, &CppHotReloadTestComponent::m_moveSpeed, "Move Speed", "Speed at which the camera moves")
+				->DataElement(1, &CppHotReloadTestComponentDependency::m_moveSpeed, "Move Speed", "Speed at which the camera moves")
 				->Attribute("Min", 0.0f)
 				->Attribute("Max", 10.0f)
 				->Attribute("ChangeNotify", AZ_CRC("RefreshValues", 0x28e720d4))
