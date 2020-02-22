@@ -1,5 +1,6 @@
 # Lumberyard
-- Prototype plugin for Ly. 
+- Gem for **Ly 1.22**
+- If you have a different version, check at the end the seccion: "How to update the Gem"
 - C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now.
 - **Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
 
@@ -104,3 +105,16 @@ C++ Hot Reload will have the following statistics:
 **So a big cut in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations. 
 
 My personal recommendation is that you make your components normally, keep up-to-date your PCH file and your components includes cleaned without much cross-include files.
+
+# How to update the Gem
+Not every build step is automatic in the Gem, sadly. **But easy to fix**.
+Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `3rd party`, Ly developers probably bump the versions of these libraries with every new release. Update the paths accordingly.
+```
+//
+// 3rd party
+//
+additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
+additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
+additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
+additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
+```
