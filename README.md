@@ -7,12 +7,29 @@
 1. Download this repository and place the folder CppHotReload on the Gems folder
 2. Execute the project configurator and activate the Gem C++ Hot Reload
 
-## How to add libraries
+## Test
+The Gem include the Test folder of C++ Hot Reload as a sample of how to include other folders outside of your default game project
+1. Create an empty scene
+2. Create and entity, and a child entity, Add a mesh component and select a Sphere or other visible mesh
+3. To that child entity add the component `C++ Hot Reload - Test`, in Add Component find it typing "Test"
+4. Press play and see how it moves.
+5. Navigate to gems_dir/CppHotReload/Code/Source/Test/CppHotReloadTestComponent.cpp
+6. Around the line 52 you'll see
+```
+//
+// C++ Hot Reload
+// 
+m_movement.x = -100;     
+```
+7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
+You'll see that the ball is moving to the other direction!
+
+### How to configure libraries
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `lyLibPaths`
 2. You'll see that is configured with the basic libraries
 3. Follow the pattern adding your libraries and library paths
 
-## How to add include paths
+### How to configure include paths
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `EnvironmentVariables`
 2. You'll see that is configured with the basic paths
 ```
