@@ -13,6 +13,7 @@
 // Version
 //
 #include "StdAfx.h"
+#include "$(FileName)"
 #include <platform_impl.h>
 #include <IGem.h>
 #include <AzCore/Component/Component.h>

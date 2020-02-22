@@ -239,6 +239,10 @@ namespace CppHotReload
 			};
 			AZ::IO::Result res = fileSystem->FindFiles(GAME_DIR.c_str(), "*", searchGameDirsFunction);
 			GAME_DIRS = std::move(gameDirs);
+			//
+			// Hot reload other components located in another folder
+			//
+			GAME_DIRS.emplace_back(CPP_HOT_RELOAD_SOURCE_DIR + "/Test");
 		}
 		//
 		// Platform specific
@@ -307,7 +311,8 @@ namespace CppHotReload
 			AZ_Error("C++ Hot Reload", false, "CRC32 of project doesn't match [%s]\n", TARGET_UID.c_str());
 		}
 
-		const std::string& PCH_OPTIONS = "/FI\"" + GAME_PCH_FILENAME + "\" /Yu\"" + GAME_PCH_INCLUDE_NAME + "\" /Fp\"" + GAME_PCH_FILENAME + "\" /FI\"" + CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS + "\" ";
+		const std::string& PCH_INCLUDE = GAME_PCH_INCLUDE_NAME;
+		const std::string& PCH_OPTIONS = "/FI\"" + PCH_INCLUDE + "\" /Yu\"" + PCH_INCLUDE + "\" /Fp\"" + GAME_PCH_FILENAME + "\" /FI\"" + CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS + "\" ";
 		//
 		// Force to include custom constructor and the pch
 		//

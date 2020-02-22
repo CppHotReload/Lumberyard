@@ -144,7 +144,7 @@ namespace CppHotReload
 												  , GetCppHotReloadIntermediateDir().c_str(), licenseGuid.c_str());
     }
 	//
-	// Ly Memory Redirection ???
+	// Ly Memory Redirection 
 	//
 	void* Ly_Malloc(size_t size)
 	{
