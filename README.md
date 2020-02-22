@@ -106,6 +106,16 @@ C++ Hot Reload will have the following statistics:
 
 My personal recommendation is that you make your components normally, keep up-to-date your PCH file and your components includes cleaned without much cross-include files.
 
+# You are interested in know about these options!
+```
+{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "NO" },			// if you not always use EBuses
+{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_FAST, "YES" },		// dependencies are found if are .h or .cpp only
+{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0, "NO" },	// search always dependencies
+```
+Lumberyard is designed to use **Ebuses and avoid dependencies between components based on include files**. Just in case you have them for legacy reasons, C++ Hot Reload can search for you those dependencies and dependats and build them. That have a cost, and you'll need to "pay" that cost at least the first time you reload a file to have all symbols. 
+
+If that's your case activate: SEARCH_DEPENDENCIES_ON_DEMAND = "YES", my recommendation: use EBuses :)
+
 # How to update the Gem
 Not every build step is automatic in the Gem, sadly. **But easy to fix**.
 Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `3rd party`, Ly developers probably bump the versions of these libraries with every new release. Update the paths accordingly.
