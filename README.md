@@ -8,10 +8,9 @@
 2. Execute the project configurator and activate the Gem C++ Hot Reload
 
 ## Test
-The Gem include the Test folder of C++ Hot Reload as a sample of how to include other folders outside of your default game project
-1. Create an empty scene
-2. Create and entity, and a child entity, Add a mesh component and select a Sphere or other visible mesh
-3. To that child entity add the component `C++ Hot Reload - Test`, in Add Component find it typing "Test"
+The Gem include a Test folder with 1 component as a sample of how to include other folders outside of your default game project
+1. Create an empty scene and an entity with a child entity. To the child add a mesh component and select a Sphere or other visible mesh
+3. Add the component `C++ Hot Reload - Test`, click the button Add Component and searching for "Test"
 4. Press play and see how it moves.
 5. Navigate to gems_dir/CppHotReload/Code/Source/Test/CppHotReloadTestComponent.cpp
 6. Around the line 52 you'll see
@@ -24,12 +23,12 @@ m_movement.x = -100;
 7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
 You'll see that the ball is moving to the other direction!
 
-### How to configure libraries
+### How to configure extra libraries
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `lyLibPaths`
 2. You'll see that is configured with the basic libraries
 3. Follow the pattern adding your libraries and library paths
 
-### How to configure include paths
+### How to configure extra include paths
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `EnvironmentVariables`
 2. You'll see that is configured with the basic paths
 ```
@@ -48,13 +47,13 @@ Configuration::EnvironmentVariable EnvironmentVariables[] =
 To have a bit more information check the documentation of UE4. The version of C++ Hot Reload for Ly is more modern, however all the documentation regarding C++ Hot Reload is valid for Lumberyard.
 www.hotreload.tech/UE4
 
-## Youtube playlist for the prototype integration
+## Youtube playlist about the integration
 https://www.youtube.com/playlist?list=PLHW7E3f3ce1kiKQwqlRx804_JEH-vOpbg
 
-# Good practices
+# Good practices to reduce hot reload time
 How to easily cut by half the reloading time?
 First off, my machine: Corei7-4790 CPU @ 3.60GHz, 3601 Mhz, 4 Core(s), 8 Logical Processor(s) - and the project in a SSD.
-A very common machine, however C++ Hot Reload will depend on your include configuration, reloading the default written component `WayPointManagerComponent` takes around **8-10 seconds**. 
+A very common machine, however C++ Hot Reload will depend on your build, reloading the default written component `WayPointManagerComponent` takes around **8-10 seconds**. 
 
 The current situation on the include files in `WayPointManagerComponent.h` file are:
 ```
@@ -73,7 +72,7 @@ And the cpp file includes are:
 #include <AzCore/Serialization/EditContext.h>
 ```
 
-If you move to the PCH file, StdAfx.h the following includes files as follows
+If you move to the PCH file, StdAfx.h, the following includes files as follows
 ```
 ... 
 
@@ -102,4 +101,6 @@ C++ Hot Reload will have the following statistics:
 - Compile time: 3.79052 seconds
 - Link time:    1.52869 seconds
 
-**So a big cut in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations. My personal recommendation is that you make your components normally and keep up-to-date your PCH file and your components includes cleaned.
+**So a big cut in reload time**, this can be even more improved creating a shared pch file for the engine and other strategies until 1-2 seconds of reload time. But that requires an additional effort from Ly developers to provide those types build configurations. 
+
+My personal recommendation is that you make your components normally, keep up-to-date your PCH file and your components includes cleaned without much cross-include files.
