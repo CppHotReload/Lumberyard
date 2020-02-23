@@ -289,6 +289,21 @@ namespace CppHotReload
 			};
 			AZ::IO::Result res = fileSystem->FindFiles((BIN_TEMP_DIR + "/" + GAME_NAME).c_str(), "*", searchPchAndPchObjFunction);
 			//
+			// 1.23 seems to change the way they build the games
+			//
+			if (foundPch.empty())
+			{
+				AZ::IO::Result res = fileSystem->FindFiles((BIN_TEMP_DIR + "/Code/" + GAME_NAME).c_str(), "*", searchPchAndPchObjFunction);
+			}
+			//
+			// Report the problem!
+			//
+			if (foundPch.empty())
+			{
+				AZ_Error("C++ Hot Reload", false, "Please join the Discord server and report the problem, something has been changed in the Build configuration of Lumberyard\nhttps://discord.gg/9gsaNnD\n");
+				abort();
+			}
+			//
 			// PCH and OBJ of the PCH
 			//
 			GAME_PCH_FILENAME = std::move(foundPch);

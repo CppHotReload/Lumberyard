@@ -52,7 +52,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 #if CPP_HOT_RELOAD_DEPENDENCY_TEST
 		m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
 #else
-		m_movement.x = 150.0f;
+		m_movement.x = -150.0f;
 #endif
 		// Update movement
 		const float moveSpeed         = m_moveSpeed * deltaTime;

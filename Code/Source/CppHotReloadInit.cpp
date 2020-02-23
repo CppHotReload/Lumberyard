@@ -41,8 +41,8 @@ namespace CppHotReload
 		//
 		// Libraries and their paths
 		//
-		const std::string& additionalLibPaths = GetAdditionalLibrarPaths(Version::LY_1_22);
-		const std::string& additionalLibs     = GetAdditionalLibraries(Version::LY_1_22);
+		const std::string& additionalLibPaths = GetAdditionalLibrarPaths(Version::LY_1_23);
+		const std::string& additionalLibs     = GetAdditionalLibraries(Version::LY_1_23);
 		//
 		// Compile options
 		//
