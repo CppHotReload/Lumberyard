@@ -1,5 +1,5 @@
 # Lumberyard
-- Gem for **Ly 1.22**
+- Gem for **Ly 1.22 and Ly 1.23**
 - If you have a different version, check at the end the seccion: "How to update the Gem"
 - C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now.
 - **Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
