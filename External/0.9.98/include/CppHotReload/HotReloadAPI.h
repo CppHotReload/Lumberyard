@@ -66,13 +66,7 @@ extern "C"
 				// this will update dependencies and dependants when reload.
 				// Default: YES
 				//
-				SEARCH_DEPENDENCIES_ON_DEMAND,	
-				//
-				// YES, if your C++ files are .h and .cpp activate this to speed up the search.
-				// If not the dependencies search will check for .hpp, .c, .cxx additionally
-				// Default: YES
-				//
-				SEARCH_DEPENDENCIES_ON_DEMAND_FAST,	
+				SEARCH_DEPENDENCIES_ON_DEMAND,
 				//
 				// YES, limit the search of dependencies only when it's the first time we reload a file.
 				// Default: NO

@@ -60,8 +60,8 @@ namespace CppHotReload
 		LY_1_22,
 		LY_1_23
 	};
-	const std::string& GetAdditionalLibrarPaths(Version lyVersion);
-	const std::string& GetAdditionalLibraries(Version lyVersion);
+	std::string GetAdditionalLibrarPaths(Version lyVersion);
+	std::string GetAdditionalLibraries(Version lyVersion);
 
 	const std::string& GetRootDir();
 	const std::string& GetEngineDir();

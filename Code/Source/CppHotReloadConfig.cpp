@@ -327,7 +327,7 @@ namespace CppHotReload
 #endif
 	}
 
-	const std::string& GetAdditionalLibrarPaths(Version lyVersion)
+	std::string GetAdditionalLibrarPaths(Version lyVersion)
 	{
 		if (lyVersion == Version::LY_1_22)
 		{
@@ -398,7 +398,7 @@ namespace CppHotReload
 		}
 	}
 
-	const std::string& GetAdditionalLibraries(Version lyVersion)
+	std::string GetAdditionalLibraries(Version lyVersion)
 	{
 		if (lyVersion == Version::LY_1_22)
 		{
