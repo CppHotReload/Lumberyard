@@ -326,4 +326,102 @@ namespace CppHotReload
 		CPP_HOT_RELOAD_LINK_OPTIONS = "\"" + GAME_PCH_OBJ_FILENAME + "\" /NOLOGO /MANIFEST /LARGEADDRESSAWARE /INCREMENTAL:NO /MACHINE:X64 /OPT:REF /OPT:ICF /DEBUG ";
 #endif
 	}
+
+	const std::string& GetAdditionalLibrarPaths(Version lyVersion)
+	{
+		if (lyVersion == Version::LY_1_22)
+		{
+#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
+			//
+			// Libraries directory
+			//
+			std::vector<std::string> lyLibPaths;
+			lyLibPaths.emplace_back("/Code/Framework/AzCore/AzCore");
+			lyLibPaths.emplace_back("/Code/Framework/AzFramework/AzFramework");
+			lyLibPaths.emplace_back("/Code/Framework/AzGameFramework/AzGameFramework");
+			lyLibPaths.emplace_back("/Code/Framework/GridMate");
+			lyLibPaths.emplace_back("/Gems/CryLegacy/Code");
+
+			std::string additionalLibPaths;
+			for (const std::string& libPath : lyLibPaths)
+			{
+				additionalLibPaths += "/LIBPATH:\"" + GetBinTempDir() + libPath + "\" ";
+			}
+			//
+			// 3rd party
+			//
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
+
+			return additionalLibPaths;
+#elif CPP_HOT_RELOAD_PLATFORM_MAC
+#error "Not yet supported"
+#endif
+		}
+		else if (lyVersion == Version::LY_1_23)
+		{
+#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
+			//
+			// Libraries directory
+			//
+			std::vector<std::string> lyLibPaths;
+			lyLibPaths.emplace_back("/Code/Framework/AzCore/AzCore");
+			lyLibPaths.emplace_back("/Code/Framework/AzFramework/AzFramework");
+			lyLibPaths.emplace_back("/Code/Framework/AzGameFramework/AzGameFramework");
+			lyLibPaths.emplace_back("/Code/Framework/GridMate");
+			lyLibPaths.emplace_back("/Gems/CryLegacy/Code");
+
+			std::string additionalLibPaths;
+			for (const std::string& libPath : lyLibPaths)
+			{
+				additionalLibPaths += "/LIBPATH:\"" + GetBinTempDir() + libPath + "\" ";
+			}
+			//
+			// 3rd party
+			//
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/Lua/5.1.1.9-az/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
+			additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
+
+			return additionalLibPaths;
+#elif CPP_HOT_RELOAD_PLATFORM_MAC
+#error "Not yet supported"
+#endif
+		}
+		else
+		{
+			AZ_Error("C++ Hot Reload", false, "Please update this functions to include your version\n");
+			abort();
+		}
+	}
+
+	const std::string& GetAdditionalLibraries(Version lyVersion)
+	{
+		if (lyVersion == Version::LY_1_22)
+		{
+#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
+			std::string additionalLibs = "AzGameFramework.lib AzFramework.lib GridMate.lib GridMateForTools.lib CryAction_AutoFlowNode.lib AzCore.lib lua.lib zstd.lib lz4.lib zlib.lib User32.lib Advapi32.lib PsAPI.lib User32.lib Advapi32.lib PsAPI.lib bcrypt.lib gdi32.lib ";
+			return additionalLibs;
+#elif CPP_HOT_RELOAD_PLATFORM_MAC
+#error "Not yet supported"
+#endif
+		}
+		else if (lyVersion == Version::LY_1_23)
+		{
+#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
+			std::string additionalLibs = "AzGameFramework.lib AzFramework.lib GridMate.lib GridMateForTools.lib CryAction_AutoFlowNode.lib AzCore.lib lua.lib zstd.lib lz4.lib zlib.lib User32.lib Advapi32.lib PsAPI.lib User32.lib Advapi32.lib PsAPI.lib bcrypt.lib gdi32.lib ";
+			return additionalLibs;
+#elif CPP_HOT_RELOAD_PLATFORM_MAC
+#error "Not yet supported"
+#endif
+		}
+		else
+		{
+			AZ_Error("C++ Hot Reload", false, "Please update this functions to include your version\n");
+			abort();
+		}
+	}
 }
