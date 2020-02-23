@@ -20,9 +20,9 @@ The Gem include a Test folder with 1 component as a sample of how to include oth
 // C++ Hot Reload
 // 
 #if CPP_HOT_RELOAD_DEPENDENCY_TEST
-		m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
+	m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
 #else
-		m_movement.x = -150.0f; 
+	m_movement.x = -150.0f; 
 #endif
 ```
 7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
