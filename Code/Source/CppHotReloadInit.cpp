@@ -86,7 +86,6 @@ namespace CppHotReload
 			{ Configuration::Prameter::HOOK_FILE, GetCppHotReloadHookFileName().c_str() },
 #if CPP_HOT_RELOAD_DEPENDENCY_TEST
 			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "YES" },			// I don't use always EBuses :(
-			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_FAST, "YES" },		// dependencies are found if are .h or .cpp only
 			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0, "NO" },	// NO, search always dependencies
 #else
 			{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "NO" },			// I always use EBuses!

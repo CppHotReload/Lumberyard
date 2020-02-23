@@ -16,7 +16,7 @@ def build(bld):
         defines         = ['CPP_HOT_RELOAD'],
         use             = ['AzFramework'],
         platforms       = ['win'],
-        win_features    = ['crcfix', 'ZLIB'],
+        win_features    = ['crcfix'],
         configurations  = ['debug', 'profile'],
         uselib          = ['CPPHOTRELOAD', 'CPPSERIALIZATION']
         #
