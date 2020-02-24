@@ -66,12 +66,19 @@ extern "C"
 				// this will update dependencies and dependants when reload.
 				// Default: YES
 				//
-				SEARCH_DEPENDENCIES_ON_DEMAND,
+				SEARCH_DEPENDENCIES_ON_DEMAND,	
 				//
 				// YES, limit the search of dependencies only when it's the first time we reload a file.
 				// Default: NO
 				//
 				SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0,	
+				//
+				// YES, C++ Hot Reload will not be available until this process finish.
+				// Available since v0.9.98:
+				// Note: This process is not yet multi-threaded
+				// Default: NO
+				//
+				BUILD_DEPENDENCY_GRAPH_ON_BACKGROUND,	
 				//
 				// This file will be included once before the source code generated, allow you to create your own hooks for your engine
 				//
