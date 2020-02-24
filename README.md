@@ -112,7 +112,7 @@ My personal recommendation is that you make your components normally, keep up-to
 
 # You are interested in know about these options!
 ```
-{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "NO" },			// if you not always use EBuses
+{ Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND, "NO" },		// if you not always use EBuses
 { Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_FAST, "YES" },		// dependencies are found if are .h or .cpp only
 { Configuration::Prameter::SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0, "NO" },	// search always dependencies
 ```
@@ -132,3 +132,6 @@ additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/bui
 additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
 additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
 ```
+
+# Honourable Mention
+@FluffyQuaternion for the early stage testing and his ... "special" project configuration :) 
