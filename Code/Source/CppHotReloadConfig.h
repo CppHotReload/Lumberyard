@@ -41,16 +41,6 @@
 #	define CPP_HOT_RELOAD_IS_DEBUG 0
 #	define LUMBERYARD_BIN_CONFIG_DIR	"win_x64_vs2017_profile"
 #endif
-//
-// Windows Platform
-//
-#if CPP_HOT_RELOAD_PLATFORM_WINDOWS
-//
-// PCH, pch object filename location...
-//
-#	define LUMBERYARD_PCH_NAME "StdAfx"
-#	define GAME_PCH_INCLUDE_NAME LUMBERYARD_PCH_NAME ".h"
-#endif
 
 namespace CppHotReload
 {

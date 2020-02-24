@@ -26,6 +26,7 @@ namespace CppHotReload
 	std::string GAME_NAME;
 	std::string GAME_DIR;
 	std::vector<std::string> GAME_DIRS;
+	std::string GAME_PCH_INCLUDE_NAME;
 	std::string GAME_PCH_FILENAME;
 	std::string GAME_PCH_OBJ_FILENAME;
 	std::string BIN_TEMP_DIR;
@@ -68,6 +69,14 @@ namespace CppHotReload
 		uint32_t py_build_system_crc32 = ((zlib_crc & 0xffffffff) + MIN_UID_VALUE) % MAX_UID_VALUE;
 		return std::to_string(py_build_system_crc32);
 	}
+
+	static inline std::string RemoveExtension(const std::string& text)
+	{
+		std::string::size_type last = text.find_last_of('.');
+		std::string ret = text.substr(0, last);
+		return ret;
+	}
+
 
 	const std::string& GetRootDir()							{ return ROOT_DIR; }
 	const std::string& GetEngineDir()						{ return ENGINE_DIR; }
@@ -160,6 +169,7 @@ namespace CppHotReload
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_HOOK_FILENAME.c_str()))
 		{
 			AZ_Error("C++ Hot Reload", false, "C++ Hot Reload files not found:\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", CPP_HOT_RELOAD_DIR, CPP_HOT_RELOAD_INTERMEDIATE_DIR, CPP_HOT_RELOAD_SOURCE_DIR, CPP_HOT_RELOAD_INCLUDE_FILES, CPP_HOT_RELOAD_BINARIES_DIR, CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS, CPP_HOT_RELOAD_HOOK_FILENAME);
+			abort();
 			return;
 		}
 		//
@@ -171,6 +181,7 @@ namespace CppHotReload
 			if (fileIO->Open(BOOTSTRAP_FILENAME.c_str(), AZ::IO::OpenMode::ModeRead | AZ::IO::OpenMode::ModeText, file) != AZ::IO::ResultCode::Success)
 			{
 				AZ_Error("C++ Hot Reload", false, "Impossible to find bootstrap.cfg file in: %s\n", BOOTSTRAP_FILENAME.c_str());
+				abort();
 				return;
 			}
 
@@ -181,6 +192,7 @@ namespace CppHotReload
 			{
 				fileIO->Close(file);
 				AZ_Error("C++ Hot Reload", false, "bootstrap.cfg is empty [%s]\n", BOOTSTRAP_FILENAME.c_str());
+				abort();
 				return;
 			}
 
@@ -191,6 +203,7 @@ namespace CppHotReload
 			if (fileIO->Read(file, fileContents.data(), actualSize) != AZ::IO::ResultCode::Success)
 			{
 				AZ_Error("C++ Hot Reload", false, "Something went wrong reading bootstrap.cfg [%s]\n", BOOTSTRAP_FILENAME.c_str());
+				abort();
 				return;
 			}
 			fileContents[actualSize] = 0;
@@ -208,6 +221,7 @@ namespace CppHotReload
 			else
 			{
 				AZ_Error("C++ Hot Reload", false, "Couldn't find sys_game_folder in bootstrap.cfg [%s]\n", BOOTSTRAP_FILENAME.c_str());
+				abort();
 				return;
 			}
 		}
@@ -216,7 +230,10 @@ namespace CppHotReload
 		//
 		GAME_DIR = DEV_DIR + "/" + GAME_NAME;
 		if (!ResolveAndCheckPath(GAME_DIR))
+		{
+			abort();
 			return;
+		}
 		//
 		// Game directories
 		//
@@ -254,12 +271,13 @@ namespace CppHotReload
 		{
 			BIN_TEMP_DIR = DEV_DIR + "/BinTemp/" + LUMBERYARD_BIN_CONFIG_DIR;
 			if (!ResolveAndCheckPath(BIN_TEMP_DIR))
+			{
+				abort();
 				return;
+			}
 			std::string foundPch;
-			std::string foundPchObj;
-
 			std::function<bool(const char*)> searchPchAndPchObjFunction;
-			searchPchAndPchObjFunction = [&fileSystem, &foundPch, &foundPchObj, &searchPchAndPchObjFunction](const char* filePath) -> bool
+			searchPchAndPchObjFunction = [&fileSystem, &foundPch, &searchPchAndPchObjFunction](const char* filePath) -> bool
 			{
 				if (fileSystem->IsDirectory(filePath))
 				{
@@ -268,20 +286,34 @@ namespace CppHotReload
 				else
 				{
 					std::string filePathString = filePath;
-					if (filePathString.find(LUMBERYARD_PCH_NAME) != std::string::npos)
+					if (filePathString.find(".pch") != std::string::npos)
 					{
-						char resolvedPath[AZ_MAX_PATH_LEN] = { 0 };
-						if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
+						//
+						// Get the precompiled header filename
+						//
+						std::smatch pch_matches;
+						if (std::regex_search(filePathString, pch_matches, std::regex(R"((\w+)(\.\d+)(\.pch))")))
 						{
-							std::string fileName = resolvedPath;
-							if (fileName.find(".pch") != std::string::npos)
+							GAME_PCH_INCLUDE_NAME = pch_matches[1].str() + ".h";
+
+							char resolvedPath[AZ_MAX_PATH_LEN] = { 0 };
+							if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
 							{
-								foundPch = std::move(fileName);
+								foundPch = std::move(resolvedPath);
+								return true;
 							}
 							else
 							{
-								foundPchObj = std::move(fileName);
+								AZ_Error("C++ Hot Reload", false, "Couldn't resolve the file path [%s]\n", filePathString.c_str());
+								abort();
+								return false;
 							}
+						}
+						else
+						{
+							AZ_Error("C++ Hot Reload", false, "Couldn't extract the precompiled header filename [%s]\n", filePathString.c_str());
+							abort();
+							return false;
 						}
 					}
 				}
@@ -307,11 +339,17 @@ namespace CppHotReload
 			// PCH and OBJ of the PCH
 			//
 			GAME_PCH_FILENAME = std::move(foundPch);
-			GAME_PCH_OBJ_FILENAME = std::move(foundPchObj);
+			GAME_PCH_OBJ_FILENAME = RemoveExtension(GAME_PCH_FILENAME) + ".obj";
 			if (!ResolveAndCheckPath(GAME_PCH_FILENAME))
+			{
+				abort();
 				return;
+			}
 			if (!ResolveAndCheckPath(GAME_PCH_OBJ_FILENAME))
+			{
+				abort();
 				return;
+			}
 		}
 		//
 		// TARGET_UID
