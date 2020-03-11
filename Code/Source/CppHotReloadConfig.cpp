@@ -45,6 +45,12 @@ namespace CppHotReload
 	std::string CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS;
 	std::string CPP_HOT_RELOAD_LINK_OPTIONS;
 	std::string CPP_HOT_RELOAD_HOOK_FILENAME;
+	
+	bool ends_with(std::string const& value, std::string const& ending)
+	{
+		if (ending.size() > value.size()) return false;
+		return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+	}
 
 	uint32_t zlib_crc32(const std::string& string)
 	{
@@ -288,32 +294,35 @@ namespace CppHotReload
 					std::string filePathString = filePath;
 					if (filePathString.find(".pch") != std::string::npos)
 					{
-						//
-						// Get the precompiled header filename
-						//
-						std::smatch pch_matches;
-						if (std::regex_search(filePathString, pch_matches, std::regex(R"((\w+)(\.\d+)(\.pch))")))
+						if (ends_with(filePathString, ".pch"))
 						{
-							GAME_PCH_INCLUDE_NAME = pch_matches[1].str() + ".h";
-
-							char resolvedPath[AZ_MAX_PATH_LEN] = { 0 };
-							if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
+							//
+							// Get the precompiled header filename
+							//
+							std::smatch pch_matches;
+							if (std::regex_search(filePathString, pch_matches, std::regex(R"((\w+)(\.\d+)(\.pch))")))
 							{
-								foundPch = std::move(resolvedPath);
-								return true;
+								GAME_PCH_INCLUDE_NAME = pch_matches[1].str() + ".h";
+
+									char resolvedPath[AZ_MAX_PATH_LEN] = { 0 };
+									if (fileSystem->ResolvePath(filePath, resolvedPath, AZ_MAX_PATH_LEN))
+									{
+										foundPch = std::move(resolvedPath);
+										return true;
+									}
+									else
+									{
+										AZ_Error("C++ Hot Reload", false, "Couldn't resolve the file path [%s]\n", filePathString.c_str());
+										abort();
+										return false;
+									}
 							}
 							else
 							{
-								AZ_Error("C++ Hot Reload", false, "Couldn't resolve the file path [%s]\n", filePathString.c_str());
+								AZ_Error("C++ Hot Reload", false, "Couldn't extract the precompiled header filename [%s]\n", filePathString.c_str());
 								abort();
 								return false;
 							}
-						}
-						else
-						{
-							AZ_Error("C++ Hot Reload", false, "Couldn't extract the precompiled header filename [%s]\n", filePathString.c_str());
-							abort();
-							return false;
 						}
 					}
 				}
