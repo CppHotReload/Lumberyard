@@ -1,5 +1,5 @@
 # Lumberyard
-- Gem for **Ly 1.22 and Ly 1.23**
+- Gem tested in **Ly 1.22 and Ly 1.23** with PCH activated in your project
 - If you have a different version, check at the end the seccion: "How to update the Gem"
 - C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now
 - **Enter in the discord server if you need help: https://discord.gg/9gsaNnD**
@@ -53,7 +53,7 @@ Configuration::EnvironmentVariable EnvironmentVariables[] =
 
 ## More info
 To have a bit more information check the documentation of UE4. The version of C++ Hot Reload for Ly is more modern, however all the documentation regarding C++ Hot Reload is valid for Lumberyard.
-www.hotreload.tech/UE4
+www.hotreload.tech/docs/ue4
 
 ## Youtube playlist about the integration
 https://www.youtube.com/playlist?list=PLHW7E3f3ce1kiKQwqlRx804_JEH-vOpbg
@@ -61,7 +61,7 @@ https://www.youtube.com/playlist?list=PLHW7E3f3ce1kiKQwqlRx804_JEH-vOpbg
 # Good practices to reduce hot reload time
 How to easily cut by half the reloading time?
 First off, my machine: Corei7-4790 CPU @ 3.60GHz, 3601 Mhz, 4 Core(s), 8 Logical Processor(s) - and the project in a SSD.
-A very common machine, however C++ Hot Reload will depend on your build, reloading the default written component `WayPointManagerComponent` takes around **8-10 seconds**. 
+A very common machine, however C++ Hot Reload will depend on your build config, reloading the default written component `WayPointManagerComponent` takes around **8-10 seconds**. 
 
 The current situation on the include files in `WayPointManagerComponent.h` file are:
 ```
