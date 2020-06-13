@@ -1,0 +1,17 @@
+{
+    "GemFormatVersion": 4,
+    "Uuid": "aaac9a719d0f4ea284414802bb443ff7",
+    "Name": "CppHotReload",
+    "DisplayName": "C++ Hot Reload",
+    "Summary": "Ultra-fast reload of the source code no matter how big is your project you'll be allow to change the whole class structure, the header files inclusive, and fast transfer the content between versions allowing you to add or remove properties in the editor on-the-fly.",
+    "Version": "0.9.98",
+    "LumberyardVersion": [">= 1.22"],
+    "LinkType": "Dynamic",
+    "Tags": ["C++"],
+    "IconPath": "preview.png",
+    "Modules": [
+        {
+            "Type": "GameModule"
+        }
+    ]
+}

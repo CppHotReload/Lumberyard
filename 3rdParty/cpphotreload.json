@@ -1,0 +1,22 @@
+{
+    "name": "CppHotReload",
+    "source": "@GEM@/External/0.9.98",
+    "description": "C++ Hot Reload library",
+    "includes": ["include"],
+    "lib_required": "True",
+    "platform": {
+        "win_x64_vs2017": {
+            "defines_debug"     : ["CPPHOTRELOAD_DLL=\"HotReload_x64_mdd.dll\""],
+            "defines_profile"   : ["CPPHOTRELOAD_DLL=\"HotReload_x64_md.dll\""],
+            "defines_release"   : ["CPPHOTRELOAD_DLL=\"HotReload_x64_md.dll\""],
+            "importlibpath" 	: ["lib/x64"],
+            "sharedlibpath" 	: ["lib/x64"],
+            "import_debug"  	: ["HotReload_x64_mdd.lib"],
+            "import_profile"    : ["HotReload_x64_md.lib"],
+            "import_release"    : ["HotReload_x64_md.lib"],
+            "shared_debug"  	: ["HotReload_x64_mdd.dll"],
+            "shared_profile"    : ["HotReload_x64_md.dll"],
+            "shared_release"    : ["HotReload_x64_md.dll"]
+        }
+    }
+}

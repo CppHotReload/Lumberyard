@@ -1,0 +1,15 @@
+{
+    "name": "CppSerialization",
+    "source": "@GEM@/External/0.9.98",
+    "description": "C++ Hot Reload library",
+    "includes": ["include"],
+    "lib_required": "True",
+    "platform": {
+        "win_x64_vs2017": {
+            "libpath"       : ["lib/x64"],
+            "lib_debug"     : ["CppSerialization_x64_mdd.lib"],
+            "lib_profile"   : ["CppSerialization_x64_md.lib"],
+            "lib_release"   : ["CppSerialization_x64_md.lib"]
+        }
+    }
+}
