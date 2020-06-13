@@ -3,6 +3,8 @@ C++ Hot Reload for Ly 1.24 includes a hack in CppHotReloadLyHook.h to resolve 2 
 Follow the thread here: https://forums.awsgametech.com/t/c-hot-reload-gem-not-working-on-1-24-questions-for-ly-devs/8659
 
 **Please if you are using Ly 1.22 or 1.23 use the proper Git branch**: https://github.com/CppHotReload/Lumberyard/tree/Ly_1.23
+[![RESUME](https://j.gifs.com/p8D3ON.gif)](https://www.youtube.com/watch?v=_k5E0Fh5lJo)
+### https://www.hotreload.tech
 
 # Notes
 - Gem tested in **Ly 1.22, Ly 1.23, 1.24** with PCH activated in your project
