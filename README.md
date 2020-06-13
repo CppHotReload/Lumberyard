@@ -6,7 +6,11 @@ Follow the thread here: https://forums.awsgametech.com/t/c-hot-reload-gem-not-wo
 [![RESUME](https://j.gifs.com/p8D3ON.gif)](https://www.youtube.com/watch?v=_k5E0Fh5lJo)
 ### https://www.hotreload.tech
 
-# Notes
+# Installation
+1. Clone or download this repository in the Gems' folder
+2. Execute the project configurator and activate the Gem C++ Hot Reload
+
+## Notes
 - Gem tested in **Ly 1.22, Ly 1.23, 1.24** with PCH activated in your project
 - If you have a different version, check at the end the seccion: "How to update the Gem"
 - C++ Hot Reload works on Win64 and macOS. This plugin only supports Win64 and AZ::Component right now
@@ -14,30 +18,6 @@ Follow the thread here: https://forums.awsgametech.com/t/c-hot-reload-gem-not-wo
 - License: for testing, evaluation or non-commercial purpose projects
   - For more details check COMMUNITY_LICENSE.txt file.
 - To obtain a commercial license: contact *at* hotreload.tech
-
-## Installation
-1. Download this repository and place the folder CppHotReload on the Gems folder
-2. Execute the project configurator and activate the Gem C++ Hot Reload
-
-### Test
-The Gem include a Test folder with 1 component as a sample of how to include other folders outside of your default game project
-1. Create an empty scene and an entity with a child entity. To the child add a mesh component and select a Sphere or other visible mesh
-3. Add the component `C++ Hot Reload - Test`, click the button Add Component and searching for "Test"
-4. Press play and see how it moves.
-5. Navigate to gems_dir/CppHotReload/Code/Source/Test/CppHotReloadTestComponent.cpp
-6. Around the line 52 you'll see
-```
-//
-// C++ Hot Reload
-// 
-#if CPP_HOT_RELOAD_DEPENDENCY_TEST
-	m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
-#else
-	m_movement.x = -150.0f; 
-#endif
-```
-7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
-You'll see that the ball is moving to the other direction!
 
 ### How to configure extra libraries
 1. Navigate to gems_dir/CppHotReload/Code/Source and open CppHotReloadInit.cpp and search for `lyLibPaths`
@@ -143,6 +123,25 @@ additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zstd/1.35-pkg.1/bui
 additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/lz4/r128-pkg.3/build/win_x64/vc140/release\" ";
 additionalLibPaths += "/LIBPATH:\"" + GetThirdPartyDir() + "/zlib/1.2.8-pkg.3/build/win_x64/vc140/release\" ";
 ```
+### Test
+The Gem include a Test folder with 1 component as a sample of how to include other folders outside of your default game project
+1. Create an empty scene and an entity with a child entity. To the child add a mesh component and select a Sphere or other visible mesh
+3. Add the component `C++ Hot Reload - Test`, click the button Add Component and searching for "Test"
+4. Press play and see how it moves.
+5. Navigate to gems_dir/CppHotReload/Code/Source/Test/CppHotReloadTestComponent.cpp
+6. Around the line 52 you'll see
+```
+//
+// C++ Hot Reload
+// 
+#if CPP_HOT_RELOAD_DEPENDENCY_TEST
+	m_movement.x = CppHotReloadTestComponentDependency::variableToDepend;
+#else
+	m_movement.x = -150.0f; 
+#endif
+```
+7. Press play in the Editor, or in Edit mode (both works) and change the value to `m_movement.x = 100;`
+You'll see that the ball is moving to the other direction!
 
 # Honourable Mention
 @FluffyQuaternion for the early stage testing and his ... "special" project configuration :) 
