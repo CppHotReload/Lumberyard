@@ -9,6 +9,7 @@ Follow the thread here: https://forums.awsgametech.com/t/c-hot-reload-gem-not-wo
 # Installation
 1. Clone or download this repository in the Gems' folder
 2. Execute the project configurator and activate the Gem C++ Hot Reload
+3. Recommendation: deactivate Edit and Continue in Visual Studio: https://docs.microsoft.com/en-us/visualstudio/debugger/edit-and-continue-visual-cpp?view=vs-2019
 
 ## Notes
 - Gem tested in **Ly 1.22, Ly 1.23, 1.24** with PCH activated in your project
