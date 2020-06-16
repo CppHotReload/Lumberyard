@@ -57,7 +57,7 @@ namespace CppHotReload
     private:
         std::thread thCppHotReload;
         std::atomic<bool> didFinish = false;
-        void* m_ppHotReloadHandle;
+        void* m_pHotReloadHandle;
 
     public:
         AZ_RTTI(CppHotReloadModule, "{9462F100-77B6-4096-A259-4A1A8D4A7C82}", AZ::Module);
@@ -65,7 +65,7 @@ namespace CppHotReload
 
         CppHotReloadModule()
             : CryHooksModule()
-            , m_ppHotReloadHandle(nullptr)
+            , m_pHotReloadHandle(nullptr)
         {
             m_descriptors.insert(m_descriptors.end(), 
             {
@@ -75,19 +75,17 @@ namespace CppHotReload
 
         void OnSystemTick() override
         {
-            
+            if (CppHotReload::HasToPurge() && !CppHotReload::IsWorking())
+            {
+                CppHotReload::Purge();
+            }
         }
 
-        void UpdateHotReload()
+        void UpdateHotReloadThread()
         {
             while (!didFinish)
             {
-                if (CppHotReload::HasToPurge())
-                {
-                    CppHotReload::Purge();
-                    //CppHotReload::DeleteOldLibraries();   // Not yet
-                }
-                else if (!CppHotReload::IsWorking())
+                if (!CppHotReload::IsWorking())
                 {
                     CppHotReload::Update();
                     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -115,8 +113,8 @@ namespace CppHotReload
             break;
             case ESYSTEM_EVENT_GAME_POST_INIT:
             {
-                m_ppHotReloadHandle = CryLoadLibrary(CPPHOTRELOAD_DLL);
-                if (m_ppHotReloadHandle)
+                m_pHotReloadHandle = CryLoadLibrary(CPPHOTRELOAD_DLL);
+                if (m_pHotReloadHandle)
                 {
                     CppHotReload::Init(CppHotReload::ParsingFileProgress, CppHotReload::BeginReload, CppHotReload::EndReload, CppHotReload::FilterFileToBuild, CppHotReload::WillCompileFile, CppHotReload::DidCompileFile, CppHotReload::WillLinkFile, CppHotReload::DidLinkFile, CppHotReload::DidAddType, CppHotReload::DidRemoveType, CppHotReload::DidReloadInstance, CppHotReload::DidReloadVarManager, CppHotReload::DidFatalErrorScript, LogFatal, LogCritical, LogError, LogWarning, LogSystem);
 
@@ -128,7 +126,7 @@ namespace CppHotReload
                     {
                         thCppHotReload = std::thread([&]()
                         {
-                            UpdateHotReload();
+                            UpdateHotReloadThread();
                         });
                         thCppHotReload.detach();
                     }
@@ -162,14 +160,14 @@ namespace CppHotReload
             case ESYSTEM_EVENT_FAST_SHUTDOWN:
             case ESYSTEM_EVENT_FULL_SHUTDOWN:
             {
-                if (m_ppHotReloadHandle)
+                if (m_pHotReloadHandle)
                 {
                     didFinish = true;
                     if (thCppHotReload.joinable())
                     {
                         thCppHotReload.join();
                     }
-                    CryFreeLibrary(m_ppHotReloadHandle);
+                    CryFreeLibrary(m_pHotReloadHandle);
                 }
             }
             break;

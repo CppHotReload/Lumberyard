@@ -162,20 +162,18 @@ namespace CppHotReload
 		CPP_HOT_RELOAD_DIR					= GEMS_DIR + "/CppHotReload";
 		CPP_HOT_RELOAD_SOURCE_DIR			= CPP_HOT_RELOAD_DIR + "/Code/Source";
 		CPP_HOT_RELOAD_BINARIES_DIR			= CPP_HOT_RELOAD_DIR + "/External/" + CPP_HOT_RELOAD_VERSION;
-		CPP_HOT_RELOAD_INTERMEDIATE_DIR		= CPP_HOT_RELOAD_BINARIES_DIR + "/Intermediate";
 		CPP_HOT_RELOAD_INCLUDE_FILES		= CPP_HOT_RELOAD_SOURCE_DIR + "/IncludeDirectories.txt";
 		CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS	= CPP_HOT_RELOAD_SOURCE_DIR + "/CppHotReloadCustomContructors.h";
 		CPP_HOT_RELOAD_HOOK_FILENAME		= CPP_HOT_RELOAD_SOURCE_DIR + "/CppHotReloadLyHook.h";
 
 		if (!fileIO->Exists(CPP_HOT_RELOAD_DIR.c_str()) 
-		&&  !fileIO->Exists(CPP_HOT_RELOAD_INTERMEDIATE_DIR.c_str()) 
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_SOURCE_DIR.c_str()) 
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_INCLUDE_FILES.c_str()) 
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_BINARIES_DIR.c_str()) 
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS.c_str())
 		&&  !fileIO->Exists(CPP_HOT_RELOAD_HOOK_FILENAME.c_str()))
 		{
-			AZ_Error("C++ Hot Reload", false, "C++ Hot Reload files not found:\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", CPP_HOT_RELOAD_DIR, CPP_HOT_RELOAD_INTERMEDIATE_DIR, CPP_HOT_RELOAD_SOURCE_DIR, CPP_HOT_RELOAD_INCLUDE_FILES, CPP_HOT_RELOAD_BINARIES_DIR, CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS, CPP_HOT_RELOAD_HOOK_FILENAME);
+			AZ_Error("C++ Hot Reload", false, "C++ Hot Reload files not found:\n%s\n%s\n%s\n%s\n%s\n%s\n", CPP_HOT_RELOAD_DIR, CPP_HOT_RELOAD_SOURCE_DIR, CPP_HOT_RELOAD_INCLUDE_FILES, CPP_HOT_RELOAD_BINARIES_DIR, CPP_HOT_RELOAD_CUSTOM_CONSTRUCTORS, CPP_HOT_RELOAD_HOOK_FILENAME);
 			abort();
 			return;
 		}
@@ -249,6 +247,7 @@ namespace CppHotReload
 				abort();
 				return;
 			}
+			CPP_HOT_RELOAD_INTERMEDIATE_DIR = BIN_TEMP_DIR + "/CppHotReload";
 			std::string foundPch;
 			std::function<bool(const char*)> searchPchAndPchObjFunction;
 			searchPchAndPchObjFunction = [&fileSystem, &foundPch, &searchPchAndPchObjFunction](const char* filePath) -> bool
@@ -347,10 +346,10 @@ namespace CppHotReload
 		// Force to include custom constructor and the pch
 		//
 #if CPP_HOT_RELOAD_IS_DEBUG
-		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS + R"(/MDd /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /wd4005 /wd4240 /FS /std:c++17 /Zc:__cplusplus /experimental:external /external:W0 /Od /Ob0 /Oy- /RTC1 )";
+		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS + R"(/Z7 /MDd /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /wd4005 /wd4240 /FS /std:c++17 /Zc:__cplusplus /experimental:external /external:W0 /Od /Ob0 /Oy- /RTC1 )";
 		CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS  = R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=24 /DEXE_VERSION_INFO_2=0 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )";
 #else
-		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS + R"(/MD /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /FS /std:c++17 /Zc:__cplusplus /experimental:external /external:W0 /Ox /Ob2 /Ot /Oi /Oy- /wd4193 )";
+		CPP_HOT_RELOAD_COMPILE_OPTIONS = PCH_OPTIONS + R"(/Z7 /MD /bigobj /nologo /W3 /WX- /MP /Gy /GF /Gm- /fp:fast /Zc:wchar_t /Zc:forScope /GR- /Gd /Zc:inline /wd4530 /wd4577 /FS /std:c++17 /Zc:__cplusplus /experimental:external /external:W0 /Ox /Ob2 /Ot /Oi /Oy- /wd4193 )";
 		CPP_HOT_RELOAD_PREPROCESSOR_OPTIONS  = R"(/D__LUMBERYARD__ /DPRODUCT_SKU_default /D_WIN32 /D_WIN64 /D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING /D_ENABLE_EXTENDED_ALIGNED_STORAGE /D_PROFILE /DPROFILE /DNDEBUG /DAZ_ENABLE_TRACING /DAZ_ENABLE_DEBUG_TOOLS /DSCRIPTCANVAS_ERRORS_ENABLED /DEXE_VERSION_INFO_0=1 /DEXE_VERSION_INFO_1=24 /DEXE_VERSION_INFO_2=0 /DEXE_VERSION_INFO_3=0 /DPLATFORM_SUPPORTS_AWS_NATIVE_SDK /DUSE_WINDOWS_DLL_SEMANTICS /D_MT /D_DLL /DLY_METRICS_BUILD_TIME=0 /DUSE_ZSTD )";
 #endif
 		CPP_HOT_RELOAD_LINK_OPTIONS = "\"" + GAME_PCH_OBJ_FILENAME + "\" /NOLOGO /MANIFEST /LARGEADDRESSAWARE /INCREMENTAL:NO /MACHINE:X64 /OPT:REF /OPT:ICF /DEBUG ";

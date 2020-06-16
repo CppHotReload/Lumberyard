@@ -83,11 +83,14 @@ extern "C"
 				SEARCH_DEPENDENCIES_ON_DEMAND_WHEN_V_0,	
 				//
 				// YES, C++ Hot Reload will not be available until this process finish.
-				// Available since v0.9.98:
-				// Note: This process is not yet multi-threaded
 				// Default: NO
 				//
 				BUILD_DEPENDENCY_GRAPH_ON_BACKGROUND,	
+				//
+				// NO, let the engine delete the pointers when the event DID_INSTANCE_RELOAD is fired and use its internal events
+				// Default: NO
+				//
+				PURGE_POINTERS_AFTER_RELOAD,	
 				//
 				// This file will be included once before the source code generated, allow you to create your own hooks for your engine
 				//
@@ -98,6 +101,10 @@ extern "C"
 				DATA_FUNCTION,		// This function will be called and passed as void* in DefaultNew(T*& NewClass, T*& OldClass, const char* varName, void* userData)
 				DEFAULT_NEW,
 				DEFAULT_DELETE,	
+				//
+				// Execute the batch or command file outside of C++ Hot Reload, this is useful if you have heavy user security configuration and you don't allow to 
+				// start processes from inside of dynamic libs
+				//
 				EXEC_BAT,
 			};
 

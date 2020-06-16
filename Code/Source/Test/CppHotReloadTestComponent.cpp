@@ -54,7 +54,7 @@ void CppHotReloadTestComponent::OnTick(float deltaTime, AZ::ScriptTimePoint time
 	const float currLength = currPosition.GetLength();
 	const float initialLength = m_initialPosition.GetLength();
 
-	const float maxDistance = 10.0f;           
+	const float maxDistance = 10.0f;   
 
 	if (currLength >= initialLength + maxDistance || currLength <= initialLength - maxDistance)   
 	{ 

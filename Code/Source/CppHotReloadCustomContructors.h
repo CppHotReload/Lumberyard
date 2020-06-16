@@ -37,7 +37,11 @@ namespace CppHotReload
 	template <typename T>
 	static void DefaultDelete(T*& CurrentClass, const char* varName, void* userData)
 	{
-		
+		//
+		// Note: the components are Removed by RemoveComponent, so they will be deferred
+		//
+		//delete CurrentClass;
+		//CurrentClass = nullptr;
 	}
 	//
 	// In this event the class is created and variables are restored

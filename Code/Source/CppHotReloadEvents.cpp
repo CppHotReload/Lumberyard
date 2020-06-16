@@ -103,9 +103,9 @@ namespace CppHotReload
 	void DidReloadInstance(const char* const typeName, void*& data, const char* uuid)
 	{
 		//
-		// Search component by instance
+		// Search component instance by uuid
 		//
-		HotReloadPtr* subscriber;
+		HotReloadPtr* subscriber = nullptr;
 		for (HotReloadPtr& currSubscriber : hotReloadSubscribers)
 		{
 			if (currSubscriber.guid == uuid)
@@ -114,67 +114,69 @@ namespace CppHotReload
 				break;
 			}
 		}
-
-		if (subscriber->component)
+		if (!subscriber || !subscriber->component)
 		{
-			auto newComponent = reinterpret_cast<AZ::Component*>(data);
-			//
-			// Swap components for the active components. Normally because the user is in play mode
-			//
-			if (subscriber->entity)
-			{
-				//UnregisterAliveComponent(subscriber.entity, subscriber.component);
-				AZ::Entity::State originalState = subscriber->entity->GetState();
-				//
-				// Deactivate the entity to be able to operate with it
-				//
-				if (originalState == AZ::Entity::ES_ACTIVE)
-				{
-					subscriber->entity->Deactivate();
-				}
-				else
-				{
-					AZ_Warning("C++ Hot Reload", false, "%s might need the user STOP/PLAY to see the reloaded code\n", typeName);
-				}
-				//
-				// Swap Components unless is a GenericComponentWrapper that holds a template pointer
-				//
-				if (subscriber->type == CppHotReload::ComponentType::GENERIC)
-				{
-					//
-					// Set template doesn't exists in Ly
-					//
-					//auto genericComponentWrapper = azrtti_cast<AzToolsFramework::Components::GenericComponentWrapper*>(subscriber->genericComponentWrapper);
-					//genericComponentWrapper->SetTemplate(newComponent);
-				}
-				else
-				{
-					if (!subscriber->entity->RemoveComponent(subscriber->component))
-					{
-						AZ_Warning("C++ Hot Reload", false, "Couldn't remove component of type %s!\n", typeName);
-					}
-					
-					if (!subscriber->entity->AddComponent(newComponent))
-					{
-						AZ_Warning("C++ Hot Reload", false, "Couldn't add component of type %s!\n", typeName);
-					}
-				}
-				//
-				// Store the new component for the next reload
-				//
-				subscriber->component = newComponent;
-				subscriber->entity->EvaluateDependencies();
-				//
-				// Time to re-activate the entity
-				//
-				if (originalState == AZ::Entity::ES_ACTIVE)
-				{
-					subscriber->entity->Activate();
-				}
+			AZ_Warning("C++ Hot Reload", false, "Pointer of type %s with uuid %s not found!\n", typeName, uuid);
+			return;
+		}
 
-				AZ_Printf("C++ Hot Reload", "DidReloadInstance: Type %s with id %s reloaded\n", typeName, uuid);
-				//UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
+		auto newComponent = reinterpret_cast<AZ::Component*>(data);
+		//
+		// Swap components for the active components. Normally because the user is in play mode
+		//
+		if (subscriber->entity)
+		{
+			//UnregisterAliveComponent(subscriber.entity, subscriber.component);
+			AZ::Entity::State originalState = subscriber->entity->GetState();
+			//
+			// Deactivate the entity to be able to operate with it
+			//
+			if (originalState == AZ::Entity::ES_ACTIVE)
+			{
+				subscriber->entity->Deactivate();
 			}
+			else
+			{
+				AZ_Warning("C++ Hot Reload", false, "%s might need the user STOP/PLAY to see the reloaded code\n", typeName);
+			}
+			//
+			// Swap Components unless is a GenericComponentWrapper that holds a template pointer
+			//
+			if (subscriber->type == CppHotReload::ComponentType::GENERIC)
+			{
+				//
+				// Set template doesn't exists in Ly
+				//
+				//auto genericComponentWrapper = azrtti_cast<AzToolsFramework::Components::GenericComponentWrapper*>(subscriber->genericComponentWrapper);
+				//genericComponentWrapper->SetTemplate(newComponent);
+			}
+			else
+			{
+				if (!subscriber->entity->RemoveComponent(subscriber->component))
+				{
+					AZ_Warning("C++ Hot Reload", false, "Couldn't remove component of type %s!\n", typeName);
+				}
+					
+				if (!subscriber->entity->AddComponent(newComponent))
+				{
+					AZ_Warning("C++ Hot Reload", false, "Couldn't add component of type %s!\n", typeName);
+				}
+			}
+			//
+			// Store the new component for the next reload
+			//
+			subscriber->component = newComponent;
+			subscriber->entity->EvaluateDependencies();
+			//
+			// Time to re-activate the entity
+			//
+			if (originalState == AZ::Entity::ES_ACTIVE)
+			{
+				subscriber->entity->Activate();
+			}
+
+			AZ_Printf("C++ Hot Reload", "DidReloadInstance: Type %s with id %s reloaded\n", typeName, uuid);
+			//UpdateHotReloadSubscriber(HotReloadPtr{ uuid, subscriber.entity, newComponent });
 		}
 	}
 
